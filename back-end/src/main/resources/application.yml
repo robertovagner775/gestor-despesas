@@ -1,0 +1,13 @@
+spring:
+  sql:
+    init:
+      continue-on-error: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://db:5432/gestor-database
+    username: postgres
+    password: 12345
+    hikari:
+      connection-timeout: 20000
+      initialization-fail-timeout: -1
+

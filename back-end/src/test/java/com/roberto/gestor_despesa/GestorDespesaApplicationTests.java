@@ -1,0 +1,13 @@
+package com.roberto.gestor_despesa;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class GestorDespesaApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}

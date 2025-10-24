@@ -10,4 +10,6 @@ public class GestorDespesaApplication {
 		SpringApplication.run(GestorDespesaApplication.class, args);
 	}
 
+
+
 }

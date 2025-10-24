@@ -4,7 +4,7 @@ spring:
       continue-on-error: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://db:5432/gestor-database
+    url: jdbc:postgresql://db:5432/gestorDatabase
     username: postgres
     password: 12345
     hikari:

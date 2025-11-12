@@ -4,9 +4,12 @@ import com.roberto.gestor_despesa.dtos.mapper.ClientMapper;
 import com.roberto.gestor_despesa.dtos.request.ClientRequestDTO;
 import com.roberto.gestor_despesa.dtos.response.ClientResponseDTO;
 import com.roberto.gestor_despesa.entities.Client;
+import com.roberto.gestor_despesa.handler.exceptions.ConflictEntityException;
 import com.roberto.gestor_despesa.handler.exceptions.NotFoundException;
 import com.roberto.gestor_despesa.repository.ClientRepository;
 import com.roberto.gestor_despesa.services.ClientService;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -14,28 +17,30 @@ import java.util.List;
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository repository;
-
     private final ClientMapper mapper;
+    private final PasswordEncoder encoder;
 
-    public ClientServiceImpl(ClientRepository repository, ClientMapper mapper) {
+    public ClientServiceImpl(ClientRepository repository, ClientMapper mapper, PasswordEncoder encoder) {
         this.repository = repository;
         this.mapper = mapper;
+        this.encoder = encoder;
     }
 
     @Override
     public Client save(ClientRequestDTO request) {
 
-        // TODO: PRECISA ADCICIONAR A CONFIRMAçao de email
+        if(repository.existsByEmail(request.email()))
+            throw new ConflictEntityException("This email: "+ request.email() +" already exists");
 
-        // TODO: VALIDAR O CPF
+        Client client = mapper.map(request);
 
-        // TODO: VALIDAR E VERIFICAR SE O E-MAIL OU O CPF Já foi cadastrado
+        client.setPassword(encoder.encode(client.getPassword()));
 
-        return repository.save(mapper.map(request));
+        return repository.save(client);
     }
 
     @Override
-    public Client update(ClientRequestDTO request) {
+    public Client update(ClientRequestDTO request, Integer id) {
         return null;
     }
 
@@ -48,4 +53,5 @@ public class ClientServiceImpl implements ClientService {
     public ClientResponseDTO findClientById(Integer id) {
         return mapper.map(repository.findById(id).orElseThrow(() -> new NotFoundException(id)));
     }
+
 }

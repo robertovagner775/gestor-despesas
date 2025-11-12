@@ -1,13 +1,28 @@
+jwt:
+  public:  classpath:app.pub
+  private: classpath:app.key
 spring:
   sql:
     init:
       continue-on-error: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://db:5432/gestorDatabase
+    url: jdbc:postgresql://localhost:5432/gestorDatabase
     username: postgres
-    password: 12345
+    password: 123456
     hikari:
       connection-timeout: 20000
       initialization-fail-timeout: -1
+  mail:
+      host: sandbox.smtp.mailtrap.io
+      port: 587
+      username: 2d1a66ab5187e5
+      password: f865e6466f9228
+      protocol: smtp
+      properties:
+          mail:
+            smtp:
+              auth: true
+              starttls:
+                enable: true
 

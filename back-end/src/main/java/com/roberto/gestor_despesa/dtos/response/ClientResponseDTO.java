@@ -1,4 +1,13 @@
 package com.roberto.gestor_despesa.dtos.response;
 
-public record ClientResponseDTO(Integer id,String birthDate, String username, String name, String email) {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "ClientResponse")
+public record ClientResponseDTO(
+        Integer id,
+        String birthDate,
+        String username,
+        String name,
+        String email
+) {
 }

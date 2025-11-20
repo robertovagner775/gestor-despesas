@@ -3,6 +3,7 @@ package com.roberto.gestor_despesa.security;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
+import com.roberto.gestor_despesa.entities.Client;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -19,7 +20,7 @@ public class JwtService {
         this.encoder = encoder;
     }
 
-    public String generateToken(Authentication authentication) {
+    public String generateToken(Authentication authentication, Client client) {
         Instant now = Instant.now();
         long expiry = 36000L;
 
@@ -35,6 +36,7 @@ public class JwtService {
             .expiresAt(now.plusSeconds(expiry))
             .subject(authentication.getName())
             .claim("scope", scope)
+                .claim("clientId", client.getId())
             .build();
 
         return encoder.encode(

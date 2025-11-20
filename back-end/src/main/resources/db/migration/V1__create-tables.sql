@@ -8,7 +8,7 @@ create table client (
 );
 
 create table budget (
-	id INTEGER primary key,
+	id SERIAL primary key,
 	description VARCHAR(150) not null,
 	total_value NUMERIC(19, 2) not null,
 	date_start DATE not null,
@@ -18,10 +18,10 @@ create table budget (
 );
 
 create table category(
-	id INTEGER primary key,
+	id SERIAL primary key,
 	title VARCHAR(150) not null,
 	description VARCHAR(200) not null,
-	client_id INTEGER not null,
+	client_id INTEGER null,
 	constraint fk_client foreign key (client_id) references client(id)
 );
 
@@ -35,7 +35,7 @@ create table budget_category(
 );
 
 create table expense(
-	id INTEGER primary key,
+	id SERIAL primary key,
 	description VARCHAR(150) not null,
     value NUMERIC(19, 2) not null,
     data DATE not null,
@@ -46,15 +46,15 @@ create table expense(
 );
 
 create table type_income(
-	id INTEGER primary key,
+	id SERIAL primary key,
 	title VARCHAR(100) not null,
 	description VARCHAR(200) not null,
-	client_id INTEGER not null,
+	client_id INTEGER null,
 	constraint fk_client foreign key (client_id) references client(id)
 );
 
 create table income(
-	id INTEGER primary key,
+	id SERIAL primary key,
     value NUMERIC(19, 2) not null,
     data DATE not null,
 	category_id INTEGER not null,

@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-GestorDespesaApplication<gestor-despesa>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.roberto.gestor_despesa.GestorDespesaApplication",
+            "projectName": "gestor-despesa",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

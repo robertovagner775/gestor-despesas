@@ -28,64 +28,74 @@ public class Client {
     @Column(name = "password")
     private String password;
 
+    private Boolean enabled;
+
     public Client() {
     }
 
-    public Client(Integer id, String password, String email, String name, LocalDate birthDate, String username) {
+    public Client(Integer id, String username, LocalDate birthDate, String name, String email, String password, Boolean enabled) {
         this.id = id;
-        this.password = password;
-        this.email = email;
-        this.name = name;
-        this.birthDate = birthDate;
         this.username = username;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
-    }
-
-    public void setName(String name) {
         this.name = name;
-    }
-
-    public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setPassword(String password) {
         this.password = password;
+        this.enabled = enabled;
     }
 
     public Integer getId() {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getEmail() {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public LocalDate getBirthDate() {
         return birthDate;
     }
 
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
     public String getUsername() {
         return username;
     }
 
-    public String getPassword() {
-        return password;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

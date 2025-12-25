@@ -1,0 +1,9 @@
+ALTER TABLE CLIENT ADD COLUMN ENABLED BOOLEAN DEFAULT FALSE;
+
+CREATE TABLE CONFIRM_ACCOUNT_TOKEN(
+    id SERIAL primary key,
+    token VARCHAR(150) not null,
+    expiry_date TIMESTAMP not null,
+    client_id INTEGER not null,
+    CONSTRAINT fk_client FOREIGN KEY (client_id) REFERENCES CLIENT(ID)
+);

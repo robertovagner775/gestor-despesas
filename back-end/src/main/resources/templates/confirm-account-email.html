@@ -1,43 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Confirm Email</title>
-
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: blue;
-            width: 100%;
-            padding: 60px;
-        }
-
-        main {
-            background-color: ;
-            padding-left: 60px;
-            padding-right: 60px;
-        }
-
-        footer {
-            background-color: blue;
-            width: 100%;
-            padding: 60px;
-        }
-
-    </style>
 </head>
-<body>
-    <header>
+<body style="font-family: Arial; padding: 20px;">
+<h2>Olá, <span th:text="${nome}">Usuário</span>!</h2>
 
-    </header>
-    <main>
+<p>Obrigado por se cadastrar! Clique no link abaixo para confirmar sua conta:</p>
 
-    </main>
-    <footer>
+<p>
+    <a th:href="${link}"
+       style="background: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+        Confirmar Conta
+    </a>
+</p>
 
-    </footer>
+<p>Se você não fez este cadastro, ignore este e-mail.</p>
+
+<hr>
+<p>Equipe da Aplicação</p>
 </body>
 </html>

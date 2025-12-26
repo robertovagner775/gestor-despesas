@@ -1,8 +1,8 @@
 package com.roberto.gestor_despesa.dtos.mapper;
 
 
-import com.roberto.gestor_despesa.dtos.request.ClientRequestDTO;
-import com.roberto.gestor_despesa.dtos.response.ClientResponseDTO;
+import com.roberto.gestor_despesa.dtos.request.ClientRequest;
+import com.roberto.gestor_despesa.dtos.response.ClientResponse;
 import com.roberto.gestor_despesa.entities.Client;
 import org.mapstruct.*;
 
@@ -10,7 +10,8 @@ import org.mapstruct.*;
 public interface ClientMapper {
 
     @Mapping(target = "id", ignore = true)
-    Client map(ClientRequestDTO request);
+    @Mapping(target = "enabled", constant = "false")
+    Client map(ClientRequest request);
 
-    ClientResponseDTO map(Client client);
+    ClientResponse map(Client client);
 }

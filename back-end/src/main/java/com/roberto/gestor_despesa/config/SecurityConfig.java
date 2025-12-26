@@ -59,8 +59,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(
                 auth -> auth
-                    .requestMatchers(HttpMethod.POST, "/api/clients").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/clients").permitAll().requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll().requestMatchers(HttpMethod.GET, "/api/auth/confirm").permitAll()
                 .anyRequest().authenticated())
                 .oauth2ResourceServer(conf -> conf.jwt(Customizer.withDefaults()));
 

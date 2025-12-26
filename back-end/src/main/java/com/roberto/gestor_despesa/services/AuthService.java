@@ -1,9 +1,14 @@
 package com.roberto.gestor_despesa.services;
 
-import com.roberto.gestor_despesa.dtos.request.LoginRequestDTO;
-import com.roberto.gestor_despesa.dtos.response.LoginResponseDTO;
+import com.roberto.gestor_despesa.dtos.request.LoginRequest;
+import com.roberto.gestor_despesa.dtos.response.LoginResponse;
+import com.roberto.gestor_despesa.entities.Client;
 
 public interface AuthService {
 
-    public LoginResponseDTO login(LoginRequestDTO request);    
+    public LoginResponse login(LoginRequest request);
+
+    public void confirmAccount(String token);
+
+    public String generateAccountConfirmationLink(Client client);
 } 

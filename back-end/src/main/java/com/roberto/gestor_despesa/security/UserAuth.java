@@ -4,9 +4,11 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+
 
 import com.roberto.gestor_despesa.entities.Client;
+import org.springframework.security.core.userdetails.UserDetails;
+
 
 public class UserAuth implements UserDetails {
 
@@ -19,6 +21,11 @@ public class UserAuth implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return client.getEnabled();
     }
 
     @Override

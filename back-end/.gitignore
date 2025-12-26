@@ -34,3 +34,5 @@ build/
 
 classpath:app.pub
 classpath:app.key
+
+.env

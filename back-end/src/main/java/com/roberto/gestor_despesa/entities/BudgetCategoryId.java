@@ -18,6 +18,11 @@ public class BudgetCategoryId implements Serializable {
     public BudgetCategoryId() {
     }
 
+    public BudgetCategoryId(Integer budgetId, Integer categoryId) {
+        this.budgetId = budgetId;
+        this.categoryId = categoryId;
+    }
+
 
     @Override
     public boolean equals(Object o) {

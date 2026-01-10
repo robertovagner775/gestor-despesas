@@ -1,6 +1,6 @@
 package com.roberto.gestor_despesa.handler;
 
-import com.roberto.gestor_despesa.dtos.response.ErroCampoDTO;
+import com.roberto.gestor_despesa.dtos.response.ErroCampo;
 import com.roberto.gestor_despesa.handler.exceptions.ConflictEntityException;
 import com.roberto.gestor_despesa.handler.exceptions.NotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +40,7 @@ public class ControllerException extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         var erro = ex.getFieldErrors();
-        List<ErroCampoDTO> list = erro.stream().map(ErroCampoDTO::new).toList();
+        List<ErroCampo> list = erro.stream().map(ErroCampo::new).toList();
 
         ServletWebRequest servletWebRequest = (ServletWebRequest) request;
         HttpServletRequest servletRequest = servletWebRequest.getRequest();

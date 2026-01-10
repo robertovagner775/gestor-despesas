@@ -2,9 +2,12 @@ package com.roberto.gestor_despesa.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.roberto.gestor_despesa.entities.enums.PeriodType;
+import com.roberto.gestor_despesa.entities.enums.Status;
 import jakarta.persistence.*;
 
 @Table
@@ -17,11 +20,18 @@ public class Budget {
 
     private String description;
 
-    private BigDecimal totalValue;
+    private BigDecimal totalPlanned;
 
-    private LocalDate dateStart;
+    private BigDecimal totalSpent;
 
-    private LocalDate dateEnd;
+    private BigDecimal totalRemaining;
+
+    private LocalDate periodReference;
+
+    private PeriodType periodType;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
@@ -30,17 +40,28 @@ public class Budget {
     @OneToMany(mappedBy = "budget", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BudgetCategory> categories = new ArrayList<>();
 
-    public Budget(Integer id, String description, BigDecimal totalValue, LocalDate dateStart, LocalDate dateEnd, Client client, List<BudgetCategory> categories) {
-        this.id = id;
-        this.description = description;
-        this.totalValue = totalValue;
-        this.dateStart = dateStart;
-        this.dateEnd = dateEnd;
-        this.client = client;
-        this.categories = categories;
+    public Budget() {
     }
 
-    public Budget() {
+    public Budget(Integer id, Client client, List<BudgetCategory> categories, PeriodType periodType, Status status, LocalDate periodReference, BigDecimal totalSpent, BigDecimal totalRemaining, BigDecimal totalPlanned, String description) {
+        this.id = id;
+        this.client = client;
+        this.categories = categories;
+        this.periodType = periodType;
+        this.status = status;
+        this.periodReference = periodReference;
+        this.totalSpent = totalSpent;
+        this.totalRemaining = totalRemaining;
+        this.totalPlanned = totalPlanned;
+        this.description = description;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public List<BudgetCategory> getCategories() {
@@ -59,28 +80,52 @@ public class Budget {
         this.client = client;
     }
 
-    public LocalDate getDateEnd() {
-        return dateEnd;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setDateEnd(LocalDate dateEnd) {
-        this.dateEnd = dateEnd;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
-    public LocalDate getDateStart() {
-        return dateStart;
+    public PeriodType getPeriodType() {
+        return periodType;
     }
 
-    public void setDateStart(LocalDate dateStart) {
-        this.dateStart = dateStart;
+    public void setPeriodType(PeriodType periodType) {
+        this.periodType = periodType;
     }
 
-    public BigDecimal getTotalValue() {
-        return totalValue;
+    public LocalDate getPeriodReference() {
+        return periodReference;
     }
 
-    public void setTotalValue(BigDecimal totalValue) {
-        this.totalValue = totalValue;
+    public void setPeriodReference(LocalDate periodReference) {
+        this.periodReference = periodReference;
+    }
+
+    public BigDecimal getTotalRemaining() {
+        return totalRemaining;
+    }
+
+    public void setTotalRemaining(BigDecimal totalRemaining) {
+        this.totalRemaining = totalRemaining;
+    }
+
+    public BigDecimal getTotalSpent() {
+        return totalSpent;
+    }
+
+    public void setTotalSpent(BigDecimal totalSpent) {
+        this.totalSpent = totalSpent;
+    }
+
+    public BigDecimal getTotalPlanned() {
+        return totalPlanned;
+    }
+
+    public void setTotalPlanned(BigDecimal totalPlanned) {
+        this.totalPlanned = totalPlanned;
     }
 
     public String getDescription() {
@@ -89,13 +134,5 @@ public class Budget {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 }

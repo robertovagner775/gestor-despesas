@@ -10,9 +10,12 @@ create table client (
 create table budget (
 	id SERIAL primary key,
 	description VARCHAR(150) not null,
-	total_value NUMERIC(19, 2) not null,
-	date_start DATE not null,
-	date_end DATE not null,
+	status VARCHAR(15) not null,
+	total_planned NUMERIC(19, 2) not null,
+	total_spent NUMERIC(19, 2) not null,
+	total_remaining NUMERIC(19, 2) not null,
+	period_type VARCHAR(15) not null,
+	period_reference DATE not null,
 	client_id INTEGER not null,
 	constraint fk_client foreign key (client_id) references client(id)
 );
@@ -28,7 +31,9 @@ create table category(
 create table budget_category(
   budget_id INTEGER not null,
   category_id INTEGER not null,
-  value numeric(9, 2) not null,
+  planned_value numeric(9, 2) not null,
+  spent_value numeric(9, 2) not null,
+  remaining_value numeric(9, 2) not null,
   constraint fk_budget foreign key (budget_id) references budget(id),
   constraint fk_category foreign key (category_id) references category(id),
   primary key (budget_id, category_id)

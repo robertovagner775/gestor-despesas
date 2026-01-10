@@ -7,13 +7,13 @@ import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 @Schema(name = "BudgetCategoryRequest")
-public record BudgetCategoryRequestDTO(
+public record BudgetCategoryRequest(
 
         @NotNull
         Integer category_id,
 
         @NotNull
         @Positive
-        BigDecimal value
+        BigDecimal plannedValue
 ) {
 }

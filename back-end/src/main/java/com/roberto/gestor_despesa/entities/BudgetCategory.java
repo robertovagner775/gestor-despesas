@@ -22,14 +22,24 @@ public class BudgetCategory {
     private Category category;
 
     @Column(nullable = false, precision = 9, scale = 2)
-    private BigDecimal value;
+    private BigDecimal plannedValue;
+
+    @Column(nullable = false, precision = 9, scale = 2)
+    private BigDecimal spentValue;
+
+    @Column(nullable = false, precision = 9, scale = 2)
+    private BigDecimal remainingValue;
+
 
     public BudgetCategory() {
+
     }
 
-    public BudgetCategory(Category category, BigDecimal value, Budget budget) {
+    public BudgetCategory(BigDecimal remainingValue, BigDecimal spentValue, BigDecimal plannedValue, Category category, Budget budget) {
+        this.remainingValue = remainingValue;
+        this.spentValue = spentValue;
+        this.plannedValue = plannedValue;
         this.category = category;
-        this.value = value;
         this.budget = budget;
     }
 
@@ -39,6 +49,30 @@ public class BudgetCategory {
 
     public void setId(BudgetCategoryId id) {
         this.id = id;
+    }
+
+    public BigDecimal getRemainingValue() {
+        return remainingValue;
+    }
+
+    public void setRemainingValue(BigDecimal remainingValue) {
+        this.remainingValue = remainingValue;
+    }
+
+    public BigDecimal getSpentValue() {
+        return spentValue;
+    }
+
+    public void setSpentValue(BigDecimal spentValue) {
+        this.spentValue = spentValue;
+    }
+
+    public BigDecimal getPlannedValue() {
+        return plannedValue;
+    }
+
+    public void setPlannedValue(BigDecimal plannedValue) {
+        this.plannedValue = plannedValue;
     }
 
     public Category getCategory() {
@@ -55,13 +89,5 @@ public class BudgetCategory {
 
     public void setBudget(Budget budget) {
         this.budget = budget;
-    }
-
-    public BigDecimal getValue() {
-        return value;
-    }
-
-    public void setValue(BigDecimal value) {
-        this.value = value;
     }
 }

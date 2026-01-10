@@ -30,6 +30,13 @@ public class Client {
 
     private Boolean enabled;
 
+
+    public static Client clientById(Integer id) {
+        Client c = new Client();
+        c.setId(id);
+        return c;
+    }
+
     public Client() {
     }
 

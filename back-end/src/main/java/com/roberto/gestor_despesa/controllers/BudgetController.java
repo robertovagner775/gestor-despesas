@@ -6,6 +6,7 @@ import com.roberto.gestor_despesa.entities.Budget;
 import com.roberto.gestor_despesa.services.BudgetService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -53,10 +54,21 @@ public class BudgetController {
     }
 
     @GetMapping
-    public List<BudgetResponse> searchBudgets(@AuthenticationPrincipal Jwt jwt, @RequestParam(required = false) String description,@RequestParam(required = false)  LocalDate dateStart, @RequestParam(required = false)  LocalDate dateEnd, @RequestParam(required = false) String status,   @RequestParam(required = false) String category) {
+    public ResponseEntity<Page<BudgetResponse>> searchBudgets(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false)  LocalDate dateStart,
+            @RequestParam(required = false)  LocalDate dateEnd,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+            @RequestParam(required = false, defaultValue = "6") Integer pageSize
+    ) {
         Long idClient = jwt.getClaim("clientId");
 
-          List<BudgetResponse> budgetResponses =  this.service.searchBudgets(idClient.intValue(), description, status, dateStart, dateEnd, category);
-          return budgetResponses;
+        Page<BudgetResponse> budgetResponses =  this.service.searchBudgets(idClient.intValue(), description,
+                status, dateStart, dateEnd, category, pageNumber, pageSize);
+
+        return ResponseEntity.ok(budgetResponses);
     }
 }

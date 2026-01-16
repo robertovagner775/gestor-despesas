@@ -17,6 +17,9 @@ import com.roberto.gestor_despesa.repository.specifications.BudgetSpecification;
 import com.roberto.gestor_despesa.services.BudgetService;
 import com.roberto.gestor_despesa.utils.DateUtils;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.PredicateSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -116,7 +119,7 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public List<BudgetResponse> searchBudgets(Integer idCurrentClient, String description, String status, LocalDate dateStart, LocalDate dateEnd, String category) {
+    public Page<BudgetResponse> searchBudgets(Integer idCurrentClient, String description, String status, LocalDate dateStart, LocalDate dateEnd, String category, Integer pageNumber, Integer pageSize) {
 
         Specification<Budget> specs = Specification.where(BudgetSpecification.equalClient(idCurrentClient));
 
@@ -132,7 +135,10 @@ public class BudgetServiceImpl implements BudgetService {
         if (dateStart != null && dateEnd != null) {
             specs = specs.and(BudgetSpecification.dateBetween(dateStart, dateEnd));
         }
-        return budgetRepository.findAll(specs).stream().map(budgetMapper::map).toList();
+        Pageable pageRequest = PageRequest.of(pageNumber, pageSize);
+        Page<Budget> budgets =  budgetRepository.findAll(specs, pageRequest);
+
+        return budgets.map(budgetMapper::map);
     }
 
 

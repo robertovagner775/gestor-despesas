@@ -43,6 +43,10 @@ public class BudgetCategory {
         this.budget = budget;
     }
 
+    public void addSpentValue(BigDecimal value) {
+        this.spentValue = this.spentValue.add(value);
+    }
+
     public BudgetCategoryId getId() {
         return id;
     }

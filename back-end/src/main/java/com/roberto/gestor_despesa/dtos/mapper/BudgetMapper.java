@@ -4,6 +4,7 @@ import com.roberto.gestor_despesa.dtos.response.BudgetResponse;
 import com.roberto.gestor_despesa.entities.Budget;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 

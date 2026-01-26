@@ -3,6 +3,7 @@ package com.roberto.gestor_despesa.handler;
 import com.roberto.gestor_despesa.dtos.response.ErroCampo;
 import com.roberto.gestor_despesa.handler.exceptions.ConflictEntityException;
 import com.roberto.gestor_despesa.handler.exceptions.NotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,12 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class ControllerException extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> notFound(EntityNotFoundException entityNotFoundException, HttpServletRequest request) {
+        ErrorResponse err = new ErrorResponse(Timestamp.from(Instant.now()), "Not Found", entityNotFoundException.getMessage(), request.getRequestURI(), 404);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> notFound404(NotFoundException notFoundException, HttpServletRequest request) {

@@ -15,6 +15,7 @@ public interface BudgetRepository extends JpaRepository<Budget, Integer>, JpaSpe
 
     Optional<Budget> findByIdAndClient_Id(Integer id, Integer clientId);
 
-
     boolean existsByClientAndPeriodReferenceAndStatus(Client client, LocalDate periodReference, Status status);
+
+    Optional<Budget> findByClientAndPeriodReferenceAndStatus(Client client, LocalDate periodReference, Status status);
 }

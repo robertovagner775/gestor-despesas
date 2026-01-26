@@ -114,7 +114,6 @@ public class BudgetServiceImpl implements BudgetService {
         Budget budget = budgetRepository.findByIdAndClient_Id(id, idClient).orElseThrow(
                 () -> new NotFoundException(id)
         );
-
         return budgetMapper.map(budget);
     }
 

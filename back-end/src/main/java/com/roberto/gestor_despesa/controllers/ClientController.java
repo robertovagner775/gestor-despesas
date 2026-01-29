@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-@Tag(name = "Clients")
+@Tag(name = "Client")
 @RequestMapping("api/clients")
 @RestController
 public class ClientController {
@@ -36,4 +36,6 @@ public class ClientController {
     public ResponseEntity<ClientResponse> findById(@PathVariable("id") Integer id) {
        return ResponseEntity.ok(service.findClientById(id));
     }
+
+
 }

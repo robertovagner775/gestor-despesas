@@ -16,7 +16,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
-@Tag(name = "Budgets")
+@Tag(name = "Budget")
 @RequestMapping("api/budgets")
 @RestController
 public class BudgetController {

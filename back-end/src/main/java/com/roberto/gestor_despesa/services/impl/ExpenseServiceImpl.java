@@ -12,11 +12,19 @@ import com.roberto.gestor_despesa.repository.BudgetRepository;
 import com.roberto.gestor_despesa.repository.CategoryRepository;
 import com.roberto.gestor_despesa.repository.ClientRepository;
 import com.roberto.gestor_despesa.repository.ExpenseRepository;
+import com.roberto.gestor_despesa.repository.specifications.BudgetSpecification;
+import com.roberto.gestor_despesa.repository.specifications.ExpenseSpecification;
 import com.roberto.gestor_despesa.services.ExpenseService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.PredicateSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -41,7 +49,6 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Transactional
     @Override
     public Expense save(ExpenseRequest request, Integer idClient) {
-
         Client currentClient = clientRepository.getReferenceById(idClient);
         Category category = categoryRepository.getReferenceById(request.category());
 
@@ -62,13 +69,10 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .addSpentValue(request.value());
 
         budget.setTotalSpent(budget.getTotalSpent().add(request.value()));
-
         Expense expense = expenseMapper.map(request, currentClient);
         expense.setCategory(category);
-
         return expenseRepository.save(expense);
     }
-
 
     @Override
     public ExpenseResponse update(Integer id) {
@@ -79,12 +83,27 @@ public class ExpenseServiceImpl implements ExpenseService {
     public void delete(Integer id) {}
 
     @Override
-    public BudgetResponse findById(Integer id) {
-        return null;
+    public ExpenseResponse findById(Integer id) {
+        Expense expense = expenseRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+        return expenseMapper.map(expense);
     }
 
     @Override
-    public List<BudgetResponse> findAll() {
-        return List.of();
+    public Page<ExpenseResponse> findAll(Integer pageNumber, Integer pageSize, String category, String description, YearMonth date, BigDecimal valueStart, BigDecimal valueEnd, Integer currentClient) {
+        Specification<Expense> specs = Specification.where(ExpenseSpecification.equalClient(currentClient));
+        if(category != null && !category.isBlank()) {
+           specs = specs.and(ExpenseSpecification.likeCategory(category));
+        }
+        if(description != null && !description.isBlank()) {
+            specs = specs.and(ExpenseSpecification.descriptionLike(description));
+        }
+        if(date != null) {
+            specs = specs.and(ExpenseSpecification.dateBetween(date));
+        }
+        if( (valueStart != null && valueEnd != null) && valueStart.compareTo(valueEnd) < 0) {
+            specs = specs.and(ExpenseSpecification.valueBetween(valueStart, valueEnd));
+        }
+        Pageable pageRequest = PageRequest.of(pageNumber, pageSize);
+        return expenseRepository.findAll(specs, pageRequest).map(expenseMapper::map);
     }
 }

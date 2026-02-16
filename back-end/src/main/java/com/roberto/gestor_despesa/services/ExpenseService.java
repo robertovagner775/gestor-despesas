@@ -14,9 +14,9 @@ import java.util.List;
 
 public interface ExpenseService {
 
-    public Expense save(ExpenseRequest request, Integer idClient);
+    public Expense save(ExpenseRequest request, Integer idCurrentClient);
 
-    public ExpenseResponse update(Integer id);
+    public ExpenseResponse update(ExpenseRequest request, Integer id);
 
     public void delete(Integer id);
 

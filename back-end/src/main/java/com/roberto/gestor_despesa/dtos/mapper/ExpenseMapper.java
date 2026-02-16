@@ -16,6 +16,7 @@ import org.mapstruct.ReportingPolicy;
 public interface ExpenseMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "budget", ignore = true)
     @Mapping(source = "request.category", target = "category.id")
     @Mapping(target = "client", source = "client")
     Expense map(ExpenseRequest request, Client client);

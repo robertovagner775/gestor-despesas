@@ -45,6 +45,12 @@ public class ExpenseController {
         return ResponseEntity.created(location).build();
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ExpenseResponse> updateExpense(@PathVariable Integer id, @RequestBody @Valid ExpenseRequest request) {
+        ExpenseResponse response = expenseService.update(request, id);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ExpenseResponse> findById(@PathVariable Integer id) {
         ExpenseResponse response = expenseService.findById(id);
@@ -65,6 +71,12 @@ public class ExpenseController {
        Page<ExpenseResponse> listExpense = expenseService.findAll(pageNumber, pageSize, category,  description, periodRefence, valueStart, valueEnd, idCurrentClient.intValue());
        if (listExpense.isEmpty()) return ResponseEntity.noContent().build();
        return ResponseEntity.ok(listExpense);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteExpense(@PathVariable Integer id) {
+        expenseService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
  }

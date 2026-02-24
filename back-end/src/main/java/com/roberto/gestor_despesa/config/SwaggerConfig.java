@@ -25,7 +25,7 @@ public class SwaggerConfig {
                         addList("Bearer Authentication"))
                 .components(new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()))
                 .info(new io.swagger.v3.oas.models.info.Info()
-                        .title("Expense Managment")
+                        .title("Financial Management System")
                         .version("v1"));
     }
 }

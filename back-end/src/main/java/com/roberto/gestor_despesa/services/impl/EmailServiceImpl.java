@@ -4,6 +4,7 @@ import com.roberto.gestor_despesa.entities.Client;
 import com.roberto.gestor_despesa.services.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -11,17 +12,12 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+@RequiredArgsConstructor
 @Service
 public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
-
     private final TemplateEngine engine;
-
-    public EmailServiceImpl(JavaMailSender mailSender, TemplateEngine engine) {
-        this.mailSender = mailSender;
-        this.engine = engine;
-    }
 
     @Async
     @Override

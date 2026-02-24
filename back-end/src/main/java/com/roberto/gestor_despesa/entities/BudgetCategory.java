@@ -1,9 +1,17 @@
 package com.roberto.gestor_despesa.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "budget_category")
 public class BudgetCategory {
@@ -24,74 +32,9 @@ public class BudgetCategory {
     @Column(nullable = false, precision = 9, scale = 2)
     private BigDecimal plannedValue;
 
-    @Column(nullable = false, precision = 9, scale = 2)
-    private BigDecimal spentValue;
 
-    @Column(nullable = false, precision = 9, scale = 2)
-    private BigDecimal remainingValue;
-
-
-    public BudgetCategory() {
-
+    public void sumPlannedValue(BigDecimal value) {
+        this.plannedValue = plannedValue.add(value);
     }
 
-    public BudgetCategory(BigDecimal remainingValue, BigDecimal spentValue, BigDecimal plannedValue, Category category, Budget budget) {
-        this.remainingValue = remainingValue;
-        this.spentValue = spentValue;
-        this.plannedValue = plannedValue;
-        this.category = category;
-        this.budget = budget;
-    }
-
-    public void addSpentValue(BigDecimal value) {
-        this.spentValue = this.spentValue.add(value);
-    }
-
-    public BudgetCategoryId getId() {
-        return id;
-    }
-
-    public void setId(BudgetCategoryId id) {
-        this.id = id;
-    }
-
-    public BigDecimal getRemainingValue() {
-        return remainingValue;
-    }
-
-    public void setRemainingValue(BigDecimal remainingValue) {
-        this.remainingValue = remainingValue;
-    }
-
-    public BigDecimal getSpentValue() {
-        return spentValue;
-    }
-
-    public void setSpentValue(BigDecimal spentValue) {
-        this.spentValue = spentValue;
-    }
-
-    public BigDecimal getPlannedValue() {
-        return plannedValue;
-    }
-
-    public void setPlannedValue(BigDecimal plannedValue) {
-        this.plannedValue = plannedValue;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Budget getBudget() {
-        return budget;
-    }
-
-    public void setBudget(Budget budget) {
-        this.budget = budget;
-    }
 }

@@ -2,10 +2,16 @@ package com.roberto.gestor_despesa.entities;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Setter
+@Getter
+@NoArgsConstructor
 @Entity
 public class ConfirmAccountToken {
 
@@ -20,46 +26,10 @@ public class ConfirmAccountToken {
     @OneToOne
     private Client client;
 
-
     public ConfirmAccountToken(Client client) {
         this.id = null;
         this.client = client;
         this.token = UUID.randomUUID().toString();
         this.expiryDate = LocalDateTime.now().plusMinutes(60);
-    }
-
-    public ConfirmAccountToken() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public LocalDateTime getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(LocalDateTime expiryDate) {
-        this.expiryDate = expiryDate;
     }
 }

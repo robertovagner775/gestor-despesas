@@ -1,17 +1,13 @@
 package com.roberto.gestor_despesa.dtos.response;
 
-import com.roberto.gestor_despesa.entities.Budget;
-import com.roberto.gestor_despesa.entities.BudgetCategory;
 import com.roberto.gestor_despesa.entities.enums.PeriodType;
 import com.roberto.gestor_despesa.entities.enums.Status;
-import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-@Schema(name = "BudgetResponse")
-public record BudgetResponse(
+public record BudgetDetailResponse(
         Integer id,
         String description,
         BigDecimal totalPlanned,
@@ -19,6 +15,7 @@ public record BudgetResponse(
         BigDecimal totalRemaining,
         LocalDate periodReference,
         PeriodType periodType,
-        Status status
+        Status status,
+        List<BudgetCategoryResponse> categories
 ) {
 }

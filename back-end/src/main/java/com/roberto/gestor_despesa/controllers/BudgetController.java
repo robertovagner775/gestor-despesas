@@ -1,6 +1,7 @@
 package com.roberto.gestor_despesa.controllers;
 
 import com.roberto.gestor_despesa.dtos.request.BudgetRequest;
+import com.roberto.gestor_despesa.dtos.response.BudgetDetailResponse;
 import com.roberto.gestor_despesa.dtos.response.BudgetResponse;
 import com.roberto.gestor_despesa.entities.Budget;
 import com.roberto.gestor_despesa.services.BudgetService;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.List;
 
 @Tag(name = "Budget")
 @RequestMapping("api/budgets")
@@ -31,7 +31,7 @@ public class BudgetController {
     public ResponseEntity<Void> createBudget(@AuthenticationPrincipal Jwt jwt, @RequestBody @Valid BudgetRequest request) {
         Long idClient = jwt.getClaim("clientId");
 
-        Budget budgetCreated = this.service.createTotalBudget(request, idClient);
+        Budget budgetCreated = this.service.createBudget(request, idClient);
 
        URI location = ServletUriComponentsBuilder
                .fromCurrentRequest()
@@ -48,7 +48,7 @@ public class BudgetController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BudgetResponse> getById(@AuthenticationPrincipal Jwt jwt, @PathVariable Integer id) {
+    public ResponseEntity<BudgetDetailResponse> getById(@AuthenticationPrincipal Jwt jwt, @PathVariable Integer id) {
         Long idClient = jwt.getClaim("clientId");
         return ResponseEntity.ok(service.findBudgetByIdAndClient(id, idClient.intValue()));
     }

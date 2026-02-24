@@ -2,7 +2,6 @@ package com.roberto.gestor_despesa.services.impl;
 
 import com.roberto.gestor_despesa.dtos.mapper.ExpenseMapper;
 import com.roberto.gestor_despesa.dtos.request.ExpenseRequest;
-import com.roberto.gestor_despesa.dtos.response.BudgetResponse;
 import com.roberto.gestor_despesa.dtos.response.ExpenseResponse;
 import com.roberto.gestor_despesa.entities.*;
 import com.roberto.gestor_despesa.entities.enums.Status;
@@ -12,7 +11,6 @@ import com.roberto.gestor_despesa.repository.BudgetRepository;
 import com.roberto.gestor_despesa.repository.CategoryRepository;
 import com.roberto.gestor_despesa.repository.ClientRepository;
 import com.roberto.gestor_despesa.repository.ExpenseRepository;
-import com.roberto.gestor_despesa.repository.specifications.BudgetSpecification;
 import com.roberto.gestor_despesa.repository.specifications.ExpenseSpecification;
 import com.roberto.gestor_despesa.services.ExpenseService;
 import jakarta.transaction.Transactional;
@@ -26,10 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.YearMonth;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.logging.Logger;
+
 
 @Slf4j
 @RequiredArgsConstructor

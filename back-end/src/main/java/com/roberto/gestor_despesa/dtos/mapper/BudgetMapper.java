@@ -1,5 +1,6 @@
 package com.roberto.gestor_despesa.dtos.mapper;
 
+import com.roberto.gestor_despesa.dtos.response.BudgetDetailResponse;
 import com.roberto.gestor_despesa.dtos.response.BudgetResponse;
 import com.roberto.gestor_despesa.entities.Budget;
 import org.mapstruct.Mapper;
@@ -14,7 +15,9 @@ import java.util.List;
 )
 public interface BudgetMapper {
 
-    BudgetResponse map(Budget entity);
+    BudgetResponse toResponse(Budget entity);
 
-    List<BudgetResponse> map(List<Budget> entities);
+    BudgetDetailResponse toResponseDetail(Budget entity);
+
+    List<BudgetResponse> toResponse(List<Budget> entities);
 }

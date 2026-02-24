@@ -4,21 +4,21 @@ import com.roberto.gestor_despesa.dtos.mapper.ClientMapper;
 import com.roberto.gestor_despesa.dtos.request.ClientRequest;
 import com.roberto.gestor_despesa.dtos.response.ClientResponse;
 import com.roberto.gestor_despesa.entities.Client;
-import com.roberto.gestor_despesa.entities.ConfirmAccountToken;
 import com.roberto.gestor_despesa.handler.exceptions.ConflictEntityException;
 import com.roberto.gestor_despesa.handler.exceptions.NotFoundException;
 import com.roberto.gestor_despesa.repository.ClientRepository;
-import com.roberto.gestor_despesa.repository.ConfirmAccountTokenRepository;
 import com.roberto.gestor_despesa.services.AuthService;
 import com.roberto.gestor_despesa.services.ClientService;
 
 import com.roberto.gestor_despesa.services.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class ClientServiceImpl implements ClientService {
 
@@ -27,14 +27,6 @@ public class ClientServiceImpl implements ClientService {
     private final PasswordEncoder encoder;
     private final EmailService emailService;
     private final AuthService authService;
-
-    public ClientServiceImpl(ClientRepository repository, ClientMapper mapper, PasswordEncoder encoder, EmailService emailService, AuthService authService) {
-        this.repository = repository;
-        this.mapper = mapper;
-        this.encoder = encoder;
-        this.emailService = emailService;
-        this.authService = authService;
-    }
 
     @Transactional
     @Override
@@ -54,11 +46,14 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client update(ClientRequest request, Integer id) {
+
+
         return null;
     }
 
     @Override
     public List<Client> findAll() {
+
         return List.of();
     }
 

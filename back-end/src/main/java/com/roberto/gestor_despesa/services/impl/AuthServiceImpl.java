@@ -4,6 +4,7 @@ import com.roberto.gestor_despesa.entities.Client;
 import com.roberto.gestor_despesa.entities.ConfirmAccountToken;
 import com.roberto.gestor_despesa.repository.ClientRepository;
 import com.roberto.gestor_despesa.repository.ConfirmAccountTokenRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,7 @@ import com.roberto.gestor_despesa.dtos.response.LoginResponse;
 import com.roberto.gestor_despesa.security.JwtService;
 import com.roberto.gestor_despesa.services.AuthService;
 
+@RequiredArgsConstructor
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -22,26 +24,14 @@ public class AuthServiceImpl implements AuthService {
     private final ClientRepository clientRepository;
     private final ConfirmAccountTokenRepository confirmAccountTokenRepository;
 
-    public AuthServiceImpl(AuthenticationManager manager, JwtService jwtService, ClientRepository clientRepository, ConfirmAccountTokenRepository confirmAccountTokenRepository) {
-        this.manager = manager;
-        this.jwtService = jwtService;
-        this.clientRepository = clientRepository;
-        this.confirmAccountTokenRepository = confirmAccountTokenRepository;
-    }
-
     @Override
     public LoginResponse login(LoginRequest request) {
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(request.email(), request.password());
-
         Client client = clientRepository.findByEmail(request.email()).get();
-
         Authentication authResult = manager.authenticate(authentication);
-
         String token = jwtService.generateToken(authResult, client);
-
         return new LoginResponse(token);
-
     }
 
     @Override
@@ -59,5 +49,4 @@ public class AuthServiceImpl implements AuthService {
         String link = "http://localhost:8080/api/auth/confirm?token=" + confirmToken.getToken();
         return link;
     }
-
 }

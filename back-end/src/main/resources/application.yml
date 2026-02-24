@@ -2,9 +2,6 @@
 spring:
   config:
     import: optional:file:.env[.properties]
-  sql:
-    init:
-      continue-on-error: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${DB_URL}
@@ -28,4 +25,10 @@ spring:
 jwt:
   public:  ${JWT_PUBLIC}
   private: ${JWT_PRIVATE}
+
+
+logging:
+  level:
+    org:
+      flywaydb: debug
 

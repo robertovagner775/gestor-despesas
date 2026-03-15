@@ -19,7 +19,7 @@ import java.time.YearMonth;
 
 
 @Tag(name = "Expense")
-@RequestMapping("api/expense")
+@RequestMapping("api/expenses")
 @RestController
 public class ExpenseController {
 

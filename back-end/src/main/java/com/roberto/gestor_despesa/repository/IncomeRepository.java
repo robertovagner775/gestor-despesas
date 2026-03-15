@@ -1,0 +1,16 @@
+package com.roberto.gestor_despesa.repository;
+
+import com.roberto.gestor_despesa.entities.Client;
+import com.roberto.gestor_despesa.entities.Expense;
+import com.roberto.gestor_despesa.entities.Income;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface IncomeRepository extends JpaRepository<Income, Integer>, JpaSpecificationExecutor<Income> {
+
+    Optional<Income> findByClient_IdAndId(Integer clientId, Integer id);
+}

@@ -14,7 +14,9 @@ public record
             @NotBlank
             String description,
 
-            LocalDate data,
+            String paymentMethod,
+
+            LocalDate paidDate,
 
             @NotNull(message = "Valor e obrigatorio")
             @Positive(message = "O valor deve ser positivo")

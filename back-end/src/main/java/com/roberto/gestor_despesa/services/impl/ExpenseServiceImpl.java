@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 
-
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -46,7 +45,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         Budget budget = budgetRepository
                 .findByClientAndPeriodReferenceAndStatus(
                         currentClient,
-                        request.data().withDayOfMonth(1),
+                        request.paidDate().withDayOfMonth(1),
                         Status.ACTIVE
                 )
                 .orElseThrow(() -> new BudgetException("There is no budget registered for the month in which the expense was created.")
@@ -64,7 +63,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         Category category = categoryRepository.getReferenceById(request.category());
 
         expense.setDescription(request.description());
-        expense.setData(request.data());
+        expense.setPaidDate(request.paidDate());
         expense.setValue(request.value());
         expense.setCategory(category);
 

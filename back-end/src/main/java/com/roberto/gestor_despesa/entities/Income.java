@@ -1,6 +1,5 @@
 package com.roberto.gestor_despesa.entities;
 
-import com.roberto.gestor_despesa.entities.enums.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,32 +13,22 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table
 @Entity
-public class Expense {
+public class Income {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private String description;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private PaymentMethod paymentMethod;
-
-    private LocalDate paidDate;
-
+    private LocalDate receivedDate;
     private BigDecimal value;
-
-    @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false)
-    private Client client;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "budget_id", nullable = false)
-    private Budget budget;
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
 }

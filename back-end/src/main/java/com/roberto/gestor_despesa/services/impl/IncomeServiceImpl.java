@@ -36,8 +36,10 @@ public class IncomeServiceImpl implements IncomeService {
 
     @Override
     public Income createIncome(IncomeRequest request, Integer currentClient) {
-        Client client = clientRepository.getReferenceById(currentClient);
-        Category category = categoryRepository.getReferenceById(request.category());
+        Client client = clientRepository.findById(currentClient)
+                .orElseThrow(() -> new NotFoundException(currentClient));
+        Category category = categoryRepository.findById(request.category())
+                .orElseThrow(() -> new NotFoundException(request.category()));
        Income income = incomeMapper.toEntity(request);
        income.setClient(client);
        income.setCategory(category);
@@ -56,6 +58,7 @@ public class IncomeServiceImpl implements IncomeService {
         income.setValue(request.value());
 
         Income updatedIncome = incomeRepository.save(income);
+
         return incomeMapper.toResponse(updatedIncome);
     }
 

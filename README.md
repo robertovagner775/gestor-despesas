@@ -40,8 +40,8 @@ Sistema para gerenciamento de finanças pessoais, com foco no controle de despes
 - [x] Configuração inicial do projeto (migrations, Swagger e Docker)
 - [x] Autenticação com JWT (login e logout)
 - [x] CRUD de Orçamentos 
-- [ ] CRUD de Despesas 
-- [ ] CRUD de Receitas 
+- [x] CRUD de Despesas 
+- [x] CRUD de Receitas 
 - [ ] Dashboard financeiro com métricas e indicadores
 - [ ] Envio de alertas (e-mail / SMS)
 - [ ] Testes unitários

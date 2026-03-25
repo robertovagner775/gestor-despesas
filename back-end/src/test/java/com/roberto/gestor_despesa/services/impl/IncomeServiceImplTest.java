@@ -63,25 +63,27 @@ class IncomeServiceImplTest {
         @Test
         @Description(value = "should create a new income")
         void shouldCreateNewIncomeWithSuccess() {
-            IncomeRequest request = new IncomeRequest("Salário mensal", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), 8);
-            Integer currentClient = 2;
-            Client client = new Client(2, "Matias", LocalDate.of(2004, 1, 13), "Mat Wagner", "matias@email.com", "12345", true);
-            Category category = new Category(8, "Investimentos", "Rendimentos a partir de investimentos", new CategoryType(2, "INCOME", "tipo de receita"));
-            Income income = new Income(1, "Salário mensal", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), null, null);
+            IncomeRequest createRequest = new IncomeRequest("Salário mensal", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), 8);
+            Integer clientId = 2;
+            Client existingClient = new Client(2, "Matias", LocalDate.of(2004, 1, 13), "Mat Wagner", "matias@email.com", "12345", true);
+            Category existingCategory = new Category(8, "Investimentos", "Rendimentos a partir de investimentos", new CategoryType(2, "INCOME", "tipo de receita"));
+            Income expectedIncome = new Income(1, "Salário mensal", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), null, null);
 
-            given(categoryRepository.findById(request.category())).willReturn(Optional.of(category));
-            given(clientRepository.findById(currentClient)).willReturn(Optional.of(client));
-            given(incomeMapper.toEntity(request)).willReturn(income);
-            given(incomeRepository.save(incomeArgumentCaptor.capture())).willReturn(income);
-
-
-            Income incomeCreated = incomeService.createIncome(request, 2);
+            given(categoryRepository.findById(createRequest.category())).willReturn(Optional.of(existingCategory));
+            given(clientRepository.findById(clientId)).willReturn(Optional.of(existingClient));
+            given(incomeMapper.toEntity(createRequest)).willReturn(expectedIncome);
+            given(incomeRepository.save(any())).willReturn(expectedIncome);
 
 
+            Income incomeCreated = incomeService.createIncome(createRequest, 2);
+
+            verify(incomeRepository).save(incomeArgumentCaptor.capture());
             var incomeCaptorValue = incomeArgumentCaptor.getValue();
-            assertNotNull(incomeCreated, "the object income is not null");
-            assertEquals(client, incomeCaptorValue.getClient());
-            assertEquals(category, incomeCaptorValue.getCategory());
+            assertNotNull(incomeCreated);
+            assertEquals(existingClient, incomeCaptorValue.getClient());
+            assertEquals(existingCategory, incomeCaptorValue.getCategory());
+            assertEquals(createRequest.receivedDate(), incomeCaptorValue.getReceivedDate());
+            assertEquals(createRequest.value(), incomeCaptorValue.getValue());
         }
 
         @Test
@@ -144,9 +146,6 @@ class IncomeServiceImplTest {
     }
 
 
-    @Test
-    void updateIncome() {
-    }
 
     @Test
     void deleteIncome() {

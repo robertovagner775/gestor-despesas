@@ -143,9 +143,39 @@ class IncomeServiceImplTest {
             assertEquals(incomeUpdated.getId(), updatedIncomeResponse.id());
             assertEquals(incomeUpdated.getCategory().getId(), updatedIncomeResponse.category().id());
         }
+
+        @Test
+        void shouldThrowExceptionWhenCategoryNotFound() {
+            IncomeRequest updateRequest = new IncomeRequest("Salário", LocalDate.of(2026, 1, 16), new BigDecimal("3700.00"), 7);
+            Integer clientId = 2;
+            Integer incomeId = 3;
+            Income existingIncome = new Income(3, "Salário mensal", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), null, null);
+
+            when(incomeRepository.findByClient_IdAndId(clientId, incomeId)).thenReturn(Optional.of(existingIncome));
+            when(categoryRepository.findById(updateRequest.category())).thenReturn(Optional.empty());
+
+            NotFoundException exception = assertThrows(
+                    NotFoundException.class,
+                    () -> incomeService.updateIncome(updateRequest, incomeId, clientId)
+            );
+            assertTrue(exception.getMessage().contains(updateRequest.category().toString()));
+        }
+
+        @Test
+        void shouldThrowExceptionWhenIncomeNotFound() {
+            IncomeRequest updateRequest = new IncomeRequest("Salário", LocalDate.of(2026, 1, 16), new BigDecimal("3700.00"), 7);
+            Integer clientId = 2;
+            Integer incomeId = 3;
+
+            when(incomeRepository.findByClient_IdAndId(clientId, incomeId)).thenReturn(Optional.empty());
+
+            NotFoundException exception = assertThrows(
+                    NotFoundException.class,
+                    () -> incomeService.updateIncome(updateRequest, incomeId, clientId)
+            );
+            assertTrue(exception.getMessage().contains(incomeId.toString()));
+        }
     }
-
-
 
     @Test
     void deleteIncome() {

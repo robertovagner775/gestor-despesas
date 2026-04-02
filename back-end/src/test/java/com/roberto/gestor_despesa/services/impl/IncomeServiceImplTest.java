@@ -15,20 +15,28 @@ import com.roberto.gestor_despesa.repository.IncomeRepository;
 import com.roberto.gestor_despesa.services.IncomeService;
 import jakarta.persistence.EntityNotFoundException;
 import jdk.jfr.Description;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.test.annotation.Repeat;
 import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -49,8 +57,17 @@ class IncomeServiceImplTest {
     @Mock
     private IncomeRepository incomeRepository;
 
+    @Mock
+    private Page<Income> incomeList;
+
     @Captor
     private ArgumentCaptor<Income> incomeArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<Specification<Income>> specificationArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<Pageable> pageableArgumentCaptor;
 
     @Captor
     private ArgumentCaptor<IncomeResponse> incomeResponseArgumentCaptor;
@@ -177,11 +194,80 @@ class IncomeServiceImplTest {
         }
     }
 
-    @Test
-    void deleteIncome() {
+    @DisplayName(value = "Find all income tests")
+    @Nested
+    class findAllTests {
+
+        @DisplayName(value = "Should return paginated incomes when filters are applied")
+        @ParameterizedTest
+        @CsvSource({"2, 50.00, 200.00, 'Salário recebido ao longo dos meses', 2026-01-01, 2026-03-12, 'Investimento', 0, 5"})
+        void shouldReturnPagedIncomesWhenFilteringByParameters(Integer idCurrentClient, BigDecimal valueStart, BigDecimal valueEnd, String description, LocalDate dateStart, LocalDate dateEnd, String category, Integer pageNumber, Integer pageSize) {
+
+            Client client = new Client(2, "Matias", LocalDate.of(2004, 1, 13), "Mat Wagner", "matias@email.com", "12345", true);
+            CategoryType type = new CategoryType(2, "RECEITA", "entrada de dinheiro");
+            CategoryType type1 = new CategoryType(1, "DESPESA", "saída de dinheiro");
+
+            Category category0 = new Category(1, "VENDA", "Venda de materiais", type);
+            Category category1 = new Category(2, "INVESTIMENTO", "Investimentos em geral", type);
+
+            Income income0 = new Income(1, "Vendi meu celular", LocalDate.of(2026, 01, 01), new BigDecimal(1500.00), category0 , client);
+            Income income1 = new Income(2, "Recebimento de Rendimentos de Investimento em Bolsa de Valores", LocalDate.of(2026, 01, 01), new BigDecimal(1000.00), category1, client);
+
+            List<Income> incomes = List.of(income0, income1);
+
+            Page<Income> incomesPage = new PageImpl<>(incomes);
+
+            when(incomeRepository.findAll((Specification<Income>)  any(), any(Pageable.class))).thenReturn(incomesPage);
+
+            Page<IncomeResponse> result = incomeService.findAll(idCurrentClient, valueStart, valueEnd, description, dateStart, dateEnd, category, pageNumber, pageSize);
+
+            verify(incomeRepository).findAll(specificationArgumentCaptor.capture(), pageableArgumentCaptor.capture());
+            verify(incomeMapper, times(2)).toResponse(incomeArgumentCaptor.capture());
+
+            Specification<Income> incomeSpecification = specificationArgumentCaptor.getValue();
+            Pageable pageable = pageableArgumentCaptor.getValue();
+
+            assertEquals(result.getTotalElements(), incomes.size());
+            assertEquals(pageable.getPageNumber(), pageNumber);
+            assertEquals(pageable.getPageSize(), pageSize);
+            assertNotNull(incomeSpecification);
+        }
+
     }
 
-    @Test
-    void findAll() {
+    @DisplayName("Delete Income Tests")
+    @Nested
+    class DeleteIncomeTests {
+
+        @Test
+        @DisplayName(value = "Should delete income when it exists for the given client")
+        void shouldDeleteIncomeWhenIncomeExists() {
+            Integer currentClient = 3;
+            Integer idIncome = 2;
+            Income income = new Income();
+
+            when(incomeRepository.findByClient_IdAndId(currentClient, idIncome)).thenReturn(Optional.of(income));
+
+            incomeService.deleteIncome(3, 2);
+
+            verify(incomeRepository).delete(income);
+        }
+
+        @Test
+        @DisplayName(value = "Should throw exception when income does not exist")
+        void shouldThrowExceptionWhenIncomeNotFound() {
+            Integer currentClient = 3;
+            Integer idIncome = 2;
+            Income income = new Income();
+
+            when(incomeRepository.findByClient_IdAndId(currentClient, idIncome)).thenReturn(Optional.empty());
+
+            NotFoundException exception = assertThrows(NotFoundException.class, () -> incomeService.deleteIncome(currentClient, idIncome));
+
+            assertEquals(idIncome, exception.getIdEntity());
+            assertTrue(exception.getMessage().contains(idIncome.toString()));
+            verify(incomeRepository, never()).delete(income);
+        }
+
     }
 }

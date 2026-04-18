@@ -12,9 +12,8 @@ import com.roberto.gestor_despesa.handler.exceptions.NotFoundException;
 import com.roberto.gestor_despesa.repository.CategoryRepository;
 import com.roberto.gestor_despesa.repository.ClientRepository;
 import com.roberto.gestor_despesa.repository.IncomeRepository;
-import com.roberto.gestor_despesa.services.IncomeService;
-import jakarta.persistence.EntityNotFoundException;
 import jdk.jfr.Description;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,22 +27,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.test.annotation.Repeat;
-import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class IncomeServiceImplTest {
+class IncomeServiceTest {
 
     @Mock
     private CategoryRepository categoryRepository;
@@ -57,9 +53,6 @@ class IncomeServiceImplTest {
     @Mock
     private IncomeRepository incomeRepository;
 
-    @Mock
-    private Page<Income> incomeList;
-
     @Captor
     private ArgumentCaptor<Income> incomeArgumentCaptor;
 
@@ -69,11 +62,9 @@ class IncomeServiceImplTest {
     @Captor
     private ArgumentCaptor<Pageable> pageableArgumentCaptor;
 
-    @Captor
-    private ArgumentCaptor<IncomeResponse> incomeResponseArgumentCaptor;
-
     @InjectMocks
     private IncomeServiceImpl incomeService;
+    
 
     @Nested
     class CreateIncomeTests {
@@ -205,7 +196,6 @@ class IncomeServiceImplTest {
 
             Client client = new Client(2, "Matias", LocalDate.of(2004, 1, 13), "Mat Wagner", "matias@email.com", "12345", true);
             CategoryType type = new CategoryType(2, "RECEITA", "entrada de dinheiro");
-            CategoryType type1 = new CategoryType(1, "DESPESA", "saída de dinheiro");
 
             Category category0 = new Category(1, "VENDA", "Venda de materiais", type);
             Category category1 = new Category(2, "INVESTIMENTO", "Investimentos em geral", type);

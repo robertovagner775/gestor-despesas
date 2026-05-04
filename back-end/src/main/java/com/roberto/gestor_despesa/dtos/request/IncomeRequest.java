@@ -22,7 +22,7 @@ public record IncomeRequest(
                                     fraction = 2,
                                     message = "O valor deve ter no máximo 2 casas decimais"
                             )
-                            BigDecimal value,
+                            BigDecimal amount,
 
                             @NotNull
                             Integer category) {

@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.aspectj.weaver.ast.Not;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,7 +24,7 @@ public record
                     fraction = 2,
                     message = "O valor deve ter no máximo 2 casas decimais"
             )
-            BigDecimal value,
+            BigDecimal amount,
 
             @NotNull
             Integer category

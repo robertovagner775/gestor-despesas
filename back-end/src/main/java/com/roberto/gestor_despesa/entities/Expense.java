@@ -29,7 +29,7 @@ public class Expense {
 
     private LocalDate paidDate;
 
-    private BigDecimal value;
+    private BigDecimal amount;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)

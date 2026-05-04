@@ -13,7 +13,6 @@ import com.roberto.gestor_despesa.repository.CategoryRepository;
 import com.roberto.gestor_despesa.repository.ClientRepository;
 import com.roberto.gestor_despesa.repository.IncomeRepository;
 import jdk.jfr.Description;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -64,7 +63,7 @@ class IncomeServiceTest {
 
     @InjectMocks
     private IncomeServiceImpl incomeService;
-    
+
 
     @Nested
     class CreateIncomeTests {
@@ -91,7 +90,7 @@ class IncomeServiceTest {
             assertEquals(existingClient, incomeCaptorValue.getClient());
             assertEquals(existingCategory, incomeCaptorValue.getCategory());
             assertEquals(createRequest.receivedDate(), incomeCaptorValue.getReceivedDate());
-            assertEquals(createRequest.value(), incomeCaptorValue.getValue());
+            assertEquals(createRequest.amount(), incomeCaptorValue.getAmount());
         }
 
         @Test
@@ -102,11 +101,11 @@ class IncomeServiceTest {
 
             Client client = new Client(2, "Matias", LocalDate.of(2004, 1, 13), "Mat Wagner", "matias@email.com", "12345", true);
 
-            given(clientRepository.findById(currentClient))
-                    .willReturn(Optional.of(client));
+            when(clientRepository.findById(currentClient))
+                    .thenReturn(Optional.of(client));
 
-            given(categoryRepository.findById(request.category()))
-                    .willReturn(Optional.empty());
+            when(categoryRepository.findById(request.category()))
+                    .thenReturn(Optional.empty());
 
             NotFoundException exception = assertThrows(
                     NotFoundException.class,
@@ -118,6 +117,7 @@ class IncomeServiceTest {
 
     @Nested
     class UpdateIncomeTests {
+
 
         @Test
         @Description(value = "should update a income")
@@ -142,11 +142,11 @@ class IncomeServiceTest {
 
             assertEquals(updateRequest.description(), incomeUpdated.getDescription());
             assertEquals(updateRequest.receivedDate(), incomeUpdated.getReceivedDate());
-            assertEquals(updateRequest.value(), incomeUpdated.getValue());
+            assertEquals(updateRequest.amount(), incomeUpdated.getAmount());
             assertEquals(existingCategory, incomeUpdated.getCategory());
 
             assertNotNull(updatedIncomeResponse);
-            assertEquals(incomeUpdated.getValue(), updatedIncomeResponse.value());
+            assertEquals(incomeUpdated.getAmount(), updatedIncomeResponse.amount());
             assertEquals(incomeUpdated.getDescription(), updatedIncomeResponse.description());
             assertEquals(incomeUpdated.getId(), updatedIncomeResponse.id());
             assertEquals(incomeUpdated.getCategory().getId(), updatedIncomeResponse.category().id());

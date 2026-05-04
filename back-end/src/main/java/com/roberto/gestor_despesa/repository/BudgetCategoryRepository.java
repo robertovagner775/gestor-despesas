@@ -18,8 +18,8 @@ public interface BudgetCategoryRepository extends JpaRepository<BudgetCategory, 
                 bc.category.id,
                 bc.category.title,
                 COALESCE(SUM(bc.plannedValue), 0),
-                COALESCE(SUM(e.value), 0),
-                COALESCE(SUM(bc.plannedValue), 0) - COALESCE(SUM(e.value), 0)
+                COALESCE(SUM(e.amount), 0),
+                COALESCE(SUM(bc.plannedValue), 0) - COALESCE(SUM(e.amount), 0)
             FROM BudgetCategory bc
             LEFT JOIN Expense e
                 ON e.budget.id = bc.budget.id

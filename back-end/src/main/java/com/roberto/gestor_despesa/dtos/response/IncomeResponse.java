@@ -7,7 +7,7 @@ public record IncomeResponse(
         Integer id,
         String description,
         LocalDate receivedDate,
-        BigDecimal value,
+        BigDecimal amount,
         CategoryResponse category
 ) {
 }

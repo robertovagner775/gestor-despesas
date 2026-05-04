@@ -9,7 +9,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.YearMonth;
 
 public class IncomeSpecification {
 
@@ -17,8 +16,8 @@ public class IncomeSpecification {
         return (root, query, cb) -> cb.like(root.get("description"), "%" + description + "%");
     }
 
-    public static Specification<Income> valueBetween(BigDecimal valueStart, BigDecimal valueEnd) {
-        return (root, query, cb) -> cb.between(root.get("value"), valueStart, valueEnd);
+    public static Specification<Income> amountBetween(BigDecimal amountStart, BigDecimal amountEnd) {
+        return (root, query, cb) -> cb.between(root.get("amount"), amountStart, amountEnd);
     }
 
     public static Specification<Income> dateBetween(LocalDate dateStart, LocalDate dateEnd) {

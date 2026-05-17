@@ -26,7 +26,8 @@ public class IncomeController {
     private final IncomeService service;
 
     @PostMapping
-    public ResponseEntity<Void> createIncome(@AuthenticationPrincipal Jwt jwt, @RequestBody @Valid IncomeRequest request) {
+    public ResponseEntity<Void> createIncome(
+            @AuthenticationPrincipal Jwt jwt, @RequestBody @Valid IncomeRequest request) {
 
         Long idCurrentClient = jwt.getClaim("clientId");
 

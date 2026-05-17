@@ -42,4 +42,14 @@ public class Expense {
     @ManyToOne
     @JoinColumn(name = "budget_id", nullable = false)
     private Budget budget;
+
+    public Expense(String description, PaymentMethod paymentMethod, LocalDate paidDate, BigDecimal amount, Client client, Category category, Budget budget) {
+        this.description = description;
+        this.paymentMethod = paymentMethod;
+        this.paidDate = paidDate;
+        this.amount = amount;
+        this.client = client;
+        this.category = category;
+        this.budget = budget;
+    }
 }

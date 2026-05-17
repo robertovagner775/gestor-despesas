@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 12345
-      POSTGRES_DB: gestorDatabase
+      POSTGRES_DB: gestor_database
     ports:
       - "5432:5432"
     volumes:
@@ -21,9 +21,9 @@ services:
     networks:
       - app-network
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/gestorDatabase
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/gestor_database
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: 12345
+      SPRING_DATASOURCE_PASSWORD: 123456
     ports:
       - "8080:8080"
     depends_on:

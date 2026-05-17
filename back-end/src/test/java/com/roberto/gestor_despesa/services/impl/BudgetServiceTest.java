@@ -1,36 +1,47 @@
 package com.roberto.gestor_despesa.services.impl;
 
-import com.roberto.gestor_despesa.handler.exceptions.NotFoundException;
-import com.roberto.gestor_despesa.testData.builder.BudgetCategoryTestBuilder;
-import com.roberto.gestor_despesa.testData.builder.BudgetTestBuilder;
-import com.roberto.gestor_despesa.dtos.request.BudgetCategoryRequest;
-import com.roberto.gestor_despesa.dtos.request.BudgetRequest;
-import com.roberto.gestor_despesa.entities.*;
-import com.roberto.gestor_despesa.entities.enums.PeriodType;
-import com.roberto.gestor_despesa.entities.enums.Status;
-import com.roberto.gestor_despesa.handler.exceptions.ConflictEntityException;
-import com.roberto.gestor_despesa.repository.BudgetCategoryRepository;
-import com.roberto.gestor_despesa.repository.BudgetRepository;
-import com.roberto.gestor_despesa.repository.CategoryRepository;
-import com.roberto.gestor_despesa.repository.ClientRepository;
-import com.roberto.gestor_despesa.utils.DateUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.roberto.gestor_despesa.dtos.request.BudgetCategoryRequest;
+import com.roberto.gestor_despesa.dtos.request.BudgetRequest;
+import com.roberto.gestor_despesa.entities.Budget;
+import com.roberto.gestor_despesa.entities.BudgetCategory;
+import com.roberto.gestor_despesa.entities.BudgetCategoryId;
+import com.roberto.gestor_despesa.entities.Category;
+import com.roberto.gestor_despesa.entities.CategoryType;
+import com.roberto.gestor_despesa.entities.Client;
+import com.roberto.gestor_despesa.entities.enums.PeriodType;
+import com.roberto.gestor_despesa.entities.enums.Status;
+import com.roberto.gestor_despesa.handler.exceptions.ConflictEntityException;
+import com.roberto.gestor_despesa.handler.exceptions.NotFoundException;
+import com.roberto.gestor_despesa.repository.BudgetCategoryRepository;
+import com.roberto.gestor_despesa.repository.BudgetRepository;
+import com.roberto.gestor_despesa.repository.CategoryRepository;
+import com.roberto.gestor_despesa.repository.ClientRepository;
+import com.roberto.gestor_despesa.testData.builder.BudgetCategoryTestBuilder;
+import com.roberto.gestor_despesa.testData.builder.BudgetTestBuilder;
+import com.roberto.gestor_despesa.utils.DateUtils;
 
 @ExtendWith(MockitoExtension.class)
 class BudgetServiceTest {
@@ -184,8 +195,8 @@ class BudgetServiceTest {
 
     private List<Category> createCategoryList() {
         CategoryType type = new CategoryType(1, "DESPESA", "Saída");
-        Category category0 = new Category(1, "Compras", "Compras em Geral", type);
-        Category category1 = new Category(2, "Alimentação", "Gastos com alimentação", type);
+        Category category0 = new Category(1, "Compras", "Compras em Geral", type, null);
+        Category category1 = new Category(2, "Alimentação", "Gastos com alimentação", type, null);
         return List.of(category0, category1);
     }
 

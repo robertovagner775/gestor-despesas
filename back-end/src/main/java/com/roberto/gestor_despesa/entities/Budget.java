@@ -47,6 +47,18 @@ public class Budget {
     @OneToMany(mappedBy = "budget", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Expense> expense = new ArrayList<>();
 
+    public Budget(String description, BigDecimal totalPlanned, LocalDate periodReference, PeriodType periodType, Status status, Client client) {
+        this.description = description;
+        this.totalPlanned = totalPlanned;
+        this.periodReference = periodReference;
+        this.periodType = periodType;
+        this.status = status;
+        this.client = client;
+
+        this.categories = new ArrayList<>();
+        this.expense = new ArrayList<>();
+    }
+
     public void recalculateTotalPlanned() {
         this.totalPlanned = categories.stream()
                 .map(BudgetCategory::getPlannedValue)
@@ -56,9 +68,14 @@ public class Budget {
 
     public BigDecimal getTotalSpent() {
         return expense.stream()
-                .map(Expense::getValue)
+                .map(Expense::getAmount)
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public void addCategory(BudgetCategory category) {
+        categories.add(category);
+        category.setBudget(this);
     }
 
 

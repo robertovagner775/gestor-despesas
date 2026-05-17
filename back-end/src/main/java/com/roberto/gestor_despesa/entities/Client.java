@@ -2,13 +2,11 @@ package com.roberto.gestor_despesa.entities;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -37,4 +35,13 @@ public class Client {
     private String password;
 
     private Boolean enabled;
+
+    public Client(String username, LocalDate birthDate, String name, String email, String password, Boolean enabled) {
+        this.username = username;
+        this.birthDate = birthDate;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.enabled = enabled;
+    }
 }

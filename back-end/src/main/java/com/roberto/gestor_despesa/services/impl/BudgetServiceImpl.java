@@ -44,10 +44,10 @@ public class BudgetServiceImpl implements BudgetService {
     public Budget createBudget(BudgetRequest request, Long idClient) {
 
         dateUtils.validateYearMonth(request.periodReference());
-        Client client = clientRepository.getReferenceById(idClient.intValue());
+        Client client = clientRepository.findById(idClient.intValue()).orElseThrow(() -> new NotFoundException(idClient.intValue()));
 
         if(budgetRepository.existsByClientAndPeriodReferenceAndStatus(client, request.periodReference().atDay(1), Status.ACTIVE))
-            throw new ConflictEntityException("Already exists budget active in " + request.periodType());
+            throw new ConflictEntityException("Already exists budget active in " + request.periodReference());
 
         Budget budget = Budget.builder()
                 .id(null)
@@ -99,8 +99,7 @@ public class BudgetServiceImpl implements BudgetService {
 
         List<BudgetCategoryResponse> budgetCategoryResponse = budgetCategoryRepository.findAllBudgetCategoryTotal(budget.getId());
 
-        return  new BudgetDetailResponse(
-                       budget.getId(), budget.getDescription(), budget.getTotalPlanned(), totalSpent, totalRemaining, budget.getPeriodReference(), budget.getPeriodType(), budget.getStatus(), budgetCategoryResponse);
+        return new BudgetDetailResponse(budget.getId(), budget.getDescription(), budget.getTotalPlanned(), totalSpent, totalRemaining, budget.getPeriodReference(), budget.getPeriodType(), budget.getStatus(), budgetCategoryResponse);
     }
 
     @Override

@@ -32,6 +32,10 @@ public class BudgetCategory {
     @Column(nullable = false, precision = 9, scale = 2)
     private BigDecimal plannedValue;
 
+    public BudgetCategory(Budget budget, Category category) {
+        this.budget = budget;
+        this.category = category;
+    }
 
     public void sumPlannedValue(BigDecimal value) {
         this.plannedValue = plannedValue.add(value);

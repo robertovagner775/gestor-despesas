@@ -23,4 +23,15 @@ public class Category {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type_id", nullable = false)
     private CategoryType categoryType;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
+
+    public Category(String title, String description, CategoryType categoryType, Client client) {
+        this.title = title;
+        this.description = description;
+        this.categoryType = categoryType;
+        this.client = client;
+    }
 }

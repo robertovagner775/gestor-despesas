@@ -20,7 +20,7 @@ public class BudgetCategoryTestBuilder {
         this.id = new BudgetCategoryId(1, 1);
         this.budget = new BudgetTestBuilder().build();
         this.plannedValue = new BigDecimal(2700);
-        this.category = new Category(1, "VENDAS", "Vendas em Geral", new CategoryType(1, "RECEITA", "entrada de dinheiro"));
+        this.category = new Category(1, "VENDAS", "Vendas em Geral", new CategoryType(1, "RECEITA", "entrada de dinheiro"), null);
     }
 
     public BudgetCategoryTestBuilder withId(Integer idBudget, Integer idCategory) {

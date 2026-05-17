@@ -73,8 +73,8 @@ class IncomeServiceTest {
             IncomeRequest createRequest = new IncomeRequest("Salário mensal", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), 8);
             Integer clientId = 2;
             Client existingClient = new Client(2, "Matias", LocalDate.of(2004, 1, 13), "Mat Wagner", "matias@email.com", "12345", true);
-            Category existingCategory = new Category(8, "Investimentos", "Rendimentos a partir de investimentos", new CategoryType(2, "INCOME", "tipo de receita"));
-            Income expectedIncome = new Income(1, "Salário mensal", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), null, null);
+            Category existingCategory = new Category(8, "Investimentos", "Rendimentos a partir de investimentos", new CategoryType(2, "INCOME", "tipo de receita"), existingClient);
+            Income expectedIncome = new Income(1, "Salário mensal", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), null, existingClient);
 
             given(categoryRepository.findById(createRequest.category())).willReturn(Optional.of(existingCategory));
             given(clientRepository.findById(clientId)).willReturn(Optional.of(existingClient));
@@ -126,7 +126,8 @@ class IncomeServiceTest {
             IncomeRequest updateRequest = new IncomeRequest("Salário", LocalDate.of(2026, 1, 16), new BigDecimal("3700.00"), 7);
             Integer clientId = 2;
             Integer incomeId = 3;
-            Category existingCategory = new Category(7, "Vendas", "Vendas de Produtos", new CategoryType(2, "INCOME", "tipo de receita"));
+            
+            Category existingCategory = new Category(7, "Vendas", "Vendas de Produtos", new CategoryType(2, "INCOME", "tipo de receita"), null);
             Income existingIncome = new Income(3, "Salário mensal", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), null, null);
             IncomeResponse expectedResponse = new IncomeResponse(3, "Salário", LocalDate.of(2026, 1, 16), new BigDecimal("3700.00"), new CategoryResponse(7, "Vendas"));
 
@@ -197,8 +198,8 @@ class IncomeServiceTest {
             Client client = new Client(2, "Matias", LocalDate.of(2004, 1, 13), "Mat Wagner", "matias@email.com", "12345", true);
             CategoryType type = new CategoryType(2, "RECEITA", "entrada de dinheiro");
 
-            Category category0 = new Category(1, "VENDA", "Venda de materiais", type);
-            Category category1 = new Category(2, "INVESTIMENTO", "Investimentos em geral", type);
+            Category category0 = new Category(1, "VENDA", "Venda de materiais", type, client);
+            Category category1 = new Category(2, "INVESTIMENTO", "Investimentos em geral", type, client);
 
             Income income0 = new Income(1, "Vendi meu celular", LocalDate.of(2026, 01, 01), new BigDecimal(1500.00), category0 , client);
             Income income1 = new Income(2, "Recebimento de Rendimentos de Investimento em Bolsa de Valores", LocalDate.of(2026, 01, 01), new BigDecimal(1000.00), category1, client);

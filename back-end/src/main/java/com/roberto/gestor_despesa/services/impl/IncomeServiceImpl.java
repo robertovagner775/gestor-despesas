@@ -5,15 +5,12 @@ import com.roberto.gestor_despesa.dtos.request.IncomeRequest;
 import com.roberto.gestor_despesa.dtos.response.IncomeResponse;
 import com.roberto.gestor_despesa.entities.Category;
 import com.roberto.gestor_despesa.entities.Client;
-import com.roberto.gestor_despesa.entities.Expense;
 import com.roberto.gestor_despesa.entities.Income;
 import com.roberto.gestor_despesa.handler.exceptions.NotFoundException;
 import com.roberto.gestor_despesa.repository.CategoryRepository;
 import com.roberto.gestor_despesa.repository.ClientRepository;
 import com.roberto.gestor_despesa.repository.IncomeRepository;
-import com.roberto.gestor_despesa.repository.specifications.ExpenseSpecification;
 import com.roberto.gestor_despesa.repository.specifications.IncomeSpecification;
-import com.roberto.gestor_despesa.security.UserAuth;
 import com.roberto.gestor_despesa.services.IncomeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -55,7 +52,7 @@ public class IncomeServiceImpl implements IncomeService {
         income.setDescription(request.description());
         income.setReceivedDate(request.receivedDate());
         income.setCategory(category);
-        income.setValue(request.value());
+        income.setAmount(request.amount());
 
         Income updatedIncome = incomeRepository.save(income);
 
@@ -87,7 +84,7 @@ public class IncomeServiceImpl implements IncomeService {
             specs = specs.and(IncomeSpecification.dateBetween(dateStart, dateEnd));
         }
         if( (valueStart != null && valueEnd != null) && valueStart.compareTo(valueEnd) < 0) {
-            specs = specs.and(IncomeSpecification.valueBetween(valueStart, valueEnd));
+            specs = specs.and(IncomeSpecification.amountBetween(valueStart, valueEnd));
         }
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize);
         return incomeRepository.findAll(specs, pageRequest).map(incomeMapper::toResponse);

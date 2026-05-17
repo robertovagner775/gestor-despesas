@@ -2,12 +2,15 @@ package com.roberto.gestor_despesa.services.impl;
 
 import com.roberto.gestor_despesa.entities.Client;
 import com.roberto.gestor_despesa.entities.ConfirmAccountToken;
+import com.roberto.gestor_despesa.handler.exceptions.AuthException;
+import com.roberto.gestor_despesa.handler.exceptions.NotFoundException;
 import com.roberto.gestor_despesa.repository.ClientRepository;
 import com.roberto.gestor_despesa.repository.ConfirmAccountTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.roberto.gestor_despesa.dtos.request.LoginRequest;
@@ -26,9 +29,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponse login(LoginRequest request) {
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(request.email(), request.password());
-        Client client = clientRepository.findByEmail(request.email()).get();
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(request.email(), request.password());
+        Client client = clientRepository.findByEmail(request.email()).orElseThrow(() -> new AuthException(request.email()));
         Authentication authResult = manager.authenticate(authentication);
         String token = jwtService.generateToken(authResult, client);
         return new LoginResponse(token);

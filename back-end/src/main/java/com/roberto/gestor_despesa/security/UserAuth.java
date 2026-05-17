@@ -12,9 +12,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserAuth implements UserDetails {
 
-    private final Client client;
+    private Client client;
 
     public UserAuth(Client client) {
+        this.client = client;
+    }
+
+    public Client getClient() {
+        return this.client;
+    }
+
+    public void setClient(Client client) {
         this.client = client;
     }
 
@@ -35,7 +43,7 @@ public class UserAuth implements UserDetails {
 
     @Override
     public String getUsername() {
-        return client.getUsername();
+        return client.getEmail();
     }
     
 }

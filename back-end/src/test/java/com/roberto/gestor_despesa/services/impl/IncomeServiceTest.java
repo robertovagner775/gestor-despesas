@@ -13,6 +13,7 @@ import com.roberto.gestor_despesa.repository.CategoryRepository;
 import com.roberto.gestor_despesa.repository.ClientRepository;
 import com.roberto.gestor_despesa.repository.IncomeRepository;
 import jdk.jfr.Description;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

@@ -39,6 +39,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName(value = "Income Service Tests")
 class IncomeServiceTest {
 
     @Mock
@@ -65,7 +66,7 @@ class IncomeServiceTest {
     @InjectMocks
     private IncomeServiceImpl incomeService;
 
-
+    @DisplayName(value = "Create Income Tests")
     @Nested
     class CreateIncomeTests {
 
@@ -82,7 +83,7 @@ class IncomeServiceTest {
         }
 
         @Test
-        @Description(value = "should create a new income")
+        @DisplayName(value = "Should create a new income when all parameters are valid")
         void shouldCreateNewIncomeWithSuccess() {
 
             Integer clientId = 2;
@@ -105,7 +106,9 @@ class IncomeServiceTest {
             assertEquals(createRequest.amount(), incomeCaptorValue.getAmount());
         }
 
+
         @Test
+        @DisplayName(value = "Should throw NotFoundException when category is not found")
         void shouldThrowExceptionWhenCategoryNotFound() {
 
             Integer currentClient = 2;
@@ -124,6 +127,7 @@ class IncomeServiceTest {
         }
     }
 
+    @DisplayName(value = "Update Income Tests")
     @Nested
     class UpdateIncomeTests {
 
@@ -137,8 +141,8 @@ class IncomeServiceTest {
         }
 
         @Test
-        @Description(value = "should update a income")
-        void shouldUpdateIncomeSuccess() {
+        @DisplayName(value = "Should update income successfully when all parameters are valid")
+        void shouldUpdateIncomeWhenReturnSuccess() {
 
             Integer clientId = 2;
             Integer incomeId = 3;
@@ -168,7 +172,9 @@ class IncomeServiceTest {
             assertEquals(incomeUpdated.getCategory().getId(), updatedIncomeResponse.category().id());
         }
 
+
         @Test
+        @DisplayName(value = "Should throw NotFoundException when category is not found for the update")
         void shouldThrowExceptionWhenCategoryNotFound() {
             Integer clientId = 2;
             Integer incomeId = 3;
@@ -184,6 +190,7 @@ class IncomeServiceTest {
         }
 
         @Test
+        @DisplayName(value = "Should throw NotFoundException when income is not found for the given client")
         void shouldThrowExceptionWhenIncomeNotFound() {
             Integer clientId = 2;
             Integer incomeId = 3;
@@ -198,7 +205,7 @@ class IncomeServiceTest {
         }
     }
 
-    @DisplayName(value = "Find all income tests")
+    @DisplayName(value = "FindAll Income Tests")
     @Nested
     class findAllTests {
 
@@ -247,7 +254,7 @@ class IncomeServiceTest {
 
         @Test
         @DisplayName(value = "Should delete income when it exists for the given client")
-        void shouldDeleteIncomeWhenIncomeExists() {
+        void shouldDeleteWhenIncomeExistsForClient() {
             Integer currentClient = 3;
             Integer idIncome = 2;
 

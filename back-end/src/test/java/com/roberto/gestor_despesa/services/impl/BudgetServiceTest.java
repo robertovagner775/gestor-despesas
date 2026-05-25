@@ -10,14 +10,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.roberto.gestor_despesa.testData.BudgetTestData;
+import com.roberto.gestor_despesa.testData.builder.ClientTestBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -121,6 +128,33 @@ class BudgetServiceTest {
             ConflictEntityException exception = assertThrows(ConflictEntityException.class, () -> budgetService.createBudget(request, currentClient.longValue()));
 
             assertTrue(exception.getMessage().contains(request.periodReference().toString()));
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+                "1500, 1200, 2700",
+                "-1000, 2000, 1000",
+                "500, 0, 500"
+        })
+        @DisplayName(value = "Should calculate total planned value correctly")
+        void shouldCalculateTotalPlanned(BigDecimal value1, BigDecimal value2, BigDecimal expected) {
+            var req0 = new BudgetCategoryRequest(1, value1);
+            var req1 = new BudgetCategoryRequest(2, value2);
+            BudgetRequest request = new BudgetRequest("Orcamento",
+                    YearMonth.now().plusMonths(1),
+                    PeriodType.MONTH, List.of(req0, req1));
+
+            Client client = new ClientTestBuilder().build();
+            List<Category> categoryList = BudgetTestData.createCategoryList();
+
+            when(clientRepository.findById(eq(1))).thenReturn(Optional.of(client));
+            when(categoryRepository.findById(eq(1))).thenReturn(Optional.of(categoryList.get(0)));
+            when(categoryRepository.findById(eq(2))).thenReturn(Optional.of(categoryList.get(1)));
+            when(budgetRepository.save(any(Budget.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+            Budget budget = budgetService.createBudget(request, 1L);
+
+            assertEquals(expected, budget.getTotalPlanned());
         }
     }
 

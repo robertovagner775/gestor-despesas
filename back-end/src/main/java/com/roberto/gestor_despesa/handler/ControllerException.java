@@ -1,6 +1,7 @@
 package com.roberto.gestor_despesa.handler;
 
 import com.roberto.gestor_despesa.dtos.response.ErroCampo;
+import com.roberto.gestor_despesa.handler.exceptions.AuthException;
 import com.roberto.gestor_despesa.handler.exceptions.ConflictEntityException;
 import com.roberto.gestor_despesa.handler.exceptions.NotFoundException;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,6 +25,12 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class ControllerException extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ErrorResponse> authExc(AuthException authException, HttpServletRequest request) {
+        ErrorResponse err = new ErrorResponse(Timestamp.from(Instant.now()), "Unauthorized", authException.getMessage(), request.getRequestURI(), 404);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(err);
+    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponse> notFound(EntityNotFoundException entityNotFoundException, HttpServletRequest request) {

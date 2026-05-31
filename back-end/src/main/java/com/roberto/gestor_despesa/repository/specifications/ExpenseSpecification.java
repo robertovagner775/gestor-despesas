@@ -1,7 +1,5 @@
 package com.roberto.gestor_despesa.repository.specifications;
 
-import com.roberto.gestor_despesa.entities.Budget;
-import com.roberto.gestor_despesa.entities.BudgetCategory;
 import com.roberto.gestor_despesa.entities.Category;
 import com.roberto.gestor_despesa.entities.Expense;
 import jakarta.persistence.criteria.Join;
@@ -18,8 +16,8 @@ public class ExpenseSpecification {
         return (root, query, cb) -> cb.like(root.get("description"), "%" + description + "%");
     }
 
-    public static Specification<Expense> valueBetween(BigDecimal valueStart, BigDecimal valueEnd) {
-        return (root, query, cb) -> cb.between(root.get("value"), valueStart, valueEnd);
+    public static Specification<Expense> amountBetween(BigDecimal amountStart, BigDecimal amountEnd) {
+        return (root, query, cb) -> cb.between(root.get("amount"), amountStart, amountEnd);
     }
 
     public static Specification<Expense> dateBetween(YearMonth date) {

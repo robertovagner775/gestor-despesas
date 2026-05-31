@@ -64,7 +64,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         expense.setDescription(request.description());
         expense.setPaidDate(request.paidDate());
-        expense.setValue(request.value());
+        expense.setAmount(request.amount());
         expense.setCategory(category);
 
         Expense expenseUpdated = expenseRepository.save(expense);
@@ -97,7 +97,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             specs = specs.and(ExpenseSpecification.dateBetween(date));
         }
         if( (valueStart != null && valueEnd != null) && valueStart.compareTo(valueEnd) < 0) {
-            specs = specs.and(ExpenseSpecification.valueBetween(valueStart, valueEnd));
+            specs = specs.and(ExpenseSpecification.amountBetween(valueStart, valueEnd));
         }
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize);
         return expenseRepository.findAll(specs, pageRequest).map(expenseMapper::map);

@@ -22,8 +22,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.clientRepository.findByEmail(username).map(UserAuth::new).orElseThrow(() -> new UsernameNotFoundException("User "+ username +" not found"));
     }
-
-
-
-    
 }

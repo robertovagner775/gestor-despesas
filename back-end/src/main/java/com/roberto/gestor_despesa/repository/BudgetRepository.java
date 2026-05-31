@@ -27,14 +27,14 @@ public interface BudgetRepository extends JpaRepository<Budget, Integer>, JpaSpe
         (SELECT COALESCE(SUM(bc.plannedValue), 0)
          FROM BudgetCategory bc
          WHERE bc.budget = b),
-        (SELECT COALESCE(SUM(e.value), 0)
+        (SELECT COALESCE(SUM(e.amount), 0)
          FROM Expense e
          WHERE e.budget = b),
         (SELECT COALESCE(SUM(bc.plannedValue), 0)
          FROM BudgetCategory bc
          WHERE bc.budget = b)
         -
-        (SELECT COALESCE(SUM(e.value), 0)
+        (SELECT COALESCE(SUM(e.amount), 0)
          FROM Expense e
          WHERE e.budget = b),
         b.periodReference,
@@ -43,7 +43,7 @@ public interface BudgetRepository extends JpaRepository<Budget, Integer>, JpaSpe
     )
     FROM Budget b
     WHERE b.client.id = :clientId
-      AND (LOWER(b.description) LIKE CONCAT('%', LOWER(:description) , '%') OR :description IS NULL)
+      AND (LOWER(b.description) LIKE CONCAT('%', LOWER(:description), '%') OR :description IS NULL)
       AND (:status IS NULL OR b.status = :status)
       AND (b.periodReference BETWEEN :dateStart AND :dateEnd or (cast(:dateStart as DATE) IS NULL AND cast(:dateEnd as DATE) IS NULL))
     """)

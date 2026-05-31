@@ -22,7 +22,7 @@ public class Income {
     private Integer id;
     private String description;
     private LocalDate receivedDate;
-    private BigDecimal value;
+    private BigDecimal amount;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)

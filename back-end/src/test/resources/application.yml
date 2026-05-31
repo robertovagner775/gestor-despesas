@@ -1,0 +1,13 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: ${DB_URL_TEST}
+    username: ${DB_USERNAME_TEST}
+    password: ${DB_PASSWORD_TEST}
+    hikari:
+      connection-timeout: 20000
+      initialization-fail-timeout: -1
+
+

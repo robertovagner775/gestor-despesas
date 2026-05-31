@@ -13,6 +13,7 @@ import com.roberto.gestor_despesa.repository.CategoryRepository;
 import com.roberto.gestor_despesa.repository.ClientRepository;
 import com.roberto.gestor_despesa.repository.IncomeRepository;
 import jdk.jfr.Description;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName(value = "Income Service Tests")
 class IncomeServiceTest {
 
     @Mock
@@ -64,17 +66,28 @@ class IncomeServiceTest {
     @InjectMocks
     private IncomeServiceImpl incomeService;
 
-
+    @DisplayName(value = "Create Income Tests")
     @Nested
     class CreateIncomeTests {
+
+        private IncomeRequest createRequest;
+        private Client existingClient;
+        private Income expectedIncome;
+
+        @BeforeEach
+        void setup() {
+            createRequest = new IncomeRequest("Salário", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), 8);
+            existingClient = new Client(2, "Matias", LocalDate.of(2004, 1, 13), "Mat Wagner", "matias@email.com", "12345", true);
+            expectedIncome = new Income(1, "Salário", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), null, existingClient);
+
+        }
+
         @Test
-        @Description(value = "should create a new income")
+        @DisplayName(value = "Should create a new income when all parameters are valid")
         void shouldCreateNewIncomeWithSuccess() {
-            IncomeRequest createRequest = new IncomeRequest("Salário mensal", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), 8);
+
             Integer clientId = 2;
-            Client existingClient = new Client(2, "Matias", LocalDate.of(2004, 1, 13), "Mat Wagner", "matias@email.com", "12345", true);
             Category existingCategory = new Category(8, "Investimentos", "Rendimentos a partir de investimentos", new CategoryType(2, "INCOME", "tipo de receita"), existingClient);
-            Income expectedIncome = new Income(1, "Salário mensal", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), null, existingClient);
 
             given(categoryRepository.findById(createRequest.category())).willReturn(Optional.of(existingCategory));
             given(clientRepository.findById(clientId)).willReturn(Optional.of(existingClient));
@@ -93,42 +106,48 @@ class IncomeServiceTest {
             assertEquals(createRequest.amount(), incomeCaptorValue.getAmount());
         }
 
+
         @Test
+        @DisplayName(value = "Should throw NotFoundException when category is not found")
         void shouldThrowExceptionWhenCategoryNotFound() {
 
-            IncomeRequest request = new IncomeRequest("Salário", LocalDate.now(), new BigDecimal("1000"), 99);
             Integer currentClient = 2;
 
-            Client client = new Client(2, "Matias", LocalDate.of(2004, 1, 13), "Mat Wagner", "matias@email.com", "12345", true);
-
             when(clientRepository.findById(currentClient))
-                    .thenReturn(Optional.of(client));
+                    .thenReturn(Optional.of(existingClient));
 
-            when(categoryRepository.findById(request.category()))
+            when(categoryRepository.findById(createRequest.category()))
                     .thenReturn(Optional.empty());
 
             NotFoundException exception = assertThrows(
                     NotFoundException.class,
-                    () -> incomeService.createIncome(request, currentClient)
+                    () -> incomeService.createIncome(createRequest, currentClient)
             );
-            assertTrue(exception.getMessage().contains(request.category().toString()));
+            assertTrue(exception.getMessage().contains(createRequest.category().toString()));
         }
     }
 
+    @DisplayName(value = "Update Income Tests")
     @Nested
     class UpdateIncomeTests {
 
+        private IncomeRequest updateRequest;
+        private Income existingIncome;
+
+        @BeforeEach
+        void setup() {
+            updateRequest = new IncomeRequest("Salário", LocalDate.of(2026, 1, 16), new BigDecimal("3700.00"), 7);
+            existingIncome = new Income(3, "Salário mensal", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), null, null);
+        }
 
         @Test
-        @Description(value = "should update a income")
-        void shouldUpdateIncomeSuccess() {
+        @DisplayName(value = "Should update income successfully when all parameters are valid")
+        void shouldUpdateIncomeWhenReturnSuccess() {
 
-            IncomeRequest updateRequest = new IncomeRequest("Salário", LocalDate.of(2026, 1, 16), new BigDecimal("3700.00"), 7);
             Integer clientId = 2;
             Integer incomeId = 3;
             
             Category existingCategory = new Category(7, "Vendas", "Vendas de Produtos", new CategoryType(2, "INCOME", "tipo de receita"), null);
-            Income existingIncome = new Income(3, "Salário mensal", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), null, null);
             IncomeResponse expectedResponse = new IncomeResponse(3, "Salário", LocalDate.of(2026, 1, 16), new BigDecimal("3700.00"), new CategoryResponse(7, "Vendas"));
 
             when(categoryRepository.findById(updateRequest.category())).thenReturn(Optional.of(existingCategory));
@@ -153,12 +172,12 @@ class IncomeServiceTest {
             assertEquals(incomeUpdated.getCategory().getId(), updatedIncomeResponse.category().id());
         }
 
+
         @Test
+        @DisplayName(value = "Should throw NotFoundException when category is not found for the update")
         void shouldThrowExceptionWhenCategoryNotFound() {
-            IncomeRequest updateRequest = new IncomeRequest("Salário", LocalDate.of(2026, 1, 16), new BigDecimal("3700.00"), 7);
             Integer clientId = 2;
             Integer incomeId = 3;
-            Income existingIncome = new Income(3, "Salário mensal", LocalDate.of(2026, 3, 16), new BigDecimal("3500.00"), null, null);
 
             when(incomeRepository.findByClient_IdAndId(clientId, incomeId)).thenReturn(Optional.of(existingIncome));
             when(categoryRepository.findById(updateRequest.category())).thenReturn(Optional.empty());
@@ -171,8 +190,8 @@ class IncomeServiceTest {
         }
 
         @Test
+        @DisplayName(value = "Should throw NotFoundException when income is not found for the given client")
         void shouldThrowExceptionWhenIncomeNotFound() {
-            IncomeRequest updateRequest = new IncomeRequest("Salário", LocalDate.of(2026, 1, 16), new BigDecimal("3700.00"), 7);
             Integer clientId = 2;
             Integer incomeId = 3;
 
@@ -186,7 +205,7 @@ class IncomeServiceTest {
         }
     }
 
-    @DisplayName(value = "Find all income tests")
+    @DisplayName(value = "FindAll Income Tests")
     @Nested
     class findAllTests {
 
@@ -230,12 +249,14 @@ class IncomeServiceTest {
     @Nested
     class DeleteIncomeTests {
 
+        @Mock
+        private Income income;
+
         @Test
         @DisplayName(value = "Should delete income when it exists for the given client")
-        void shouldDeleteIncomeWhenIncomeExists() {
+        void shouldDeleteWhenIncomeExistsForClient() {
             Integer currentClient = 3;
             Integer idIncome = 2;
-            Income income = new Income();
 
             when(incomeRepository.findByClient_IdAndId(currentClient, idIncome)).thenReturn(Optional.of(income));
 
@@ -249,7 +270,6 @@ class IncomeServiceTest {
         void shouldThrowExceptionWhenIncomeNotFound() {
             Integer currentClient = 3;
             Integer idIncome = 2;
-            Income income = new Income();
 
             when(incomeRepository.findByClient_IdAndId(currentClient, idIncome)).thenReturn(Optional.empty());
 

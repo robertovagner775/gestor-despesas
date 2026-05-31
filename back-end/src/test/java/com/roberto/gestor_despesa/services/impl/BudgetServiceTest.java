@@ -10,14 +10,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.roberto.gestor_despesa.testData.BudgetTestData;
+import com.roberto.gestor_despesa.testData.builder.ClientTestBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,6 +51,7 @@ import com.roberto.gestor_despesa.testData.builder.BudgetTestBuilder;
 import com.roberto.gestor_despesa.utils.DateUtils;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName(value = "Budget Service Test")
 class BudgetServiceTest {
 
     @Mock
@@ -64,21 +72,31 @@ class BudgetServiceTest {
     @InjectMocks
     private BudgetServiceImpl budgetService;
 
+    @DisplayName(value = "Create a budget tests")
     @Nested
     class CreateBudgetTests {
 
+        private BudgetRequest request;
+        private Client client;
+        private List<Category> categories;
+
+        @BeforeEach
+        void setup() {
+            request = BudgetTestData.createBudgetRequest();
+            client = new ClientTestBuilder().build();
+            categories = BudgetTestData.createCategoryList();
+        }
+
         @Test
+        @DisplayName(value = "Should create a new budget when return success.")
         void shouldCreateNewBudgetWithSuccess() {
 
             Integer currentClient = 1;
-            BudgetRequest request = createBudgetRequest();
-            List<BudgetCategoryRequest> budgetCategoryRequests = request.budgetCategory();
-            Client client = createClient(1);
-            List<Category> categoryList = createCategoryList();
 
+            List<BudgetCategoryRequest> budgetCategoryRequest = request.budgetCategory();
             when(clientRepository.findById(currentClient)).thenReturn(Optional.of(client));
-            when(categoryRepository.findById(budgetCategoryRequests.get(0).category_id())).thenReturn(Optional.of(categoryList.get(0)));
-            when(categoryRepository.findById(budgetCategoryRequests.get(1).category_id())).thenReturn(Optional.of(categoryList.get(1)));
+            when(categoryRepository.findById(budgetCategoryRequest.get(0).category_id())).thenReturn(Optional.of(categories.get(0)));
+            when(categoryRepository.findById(budgetCategoryRequest.get(1).category_id())).thenReturn(Optional.of(categories.get(1)));
             when(budgetRepository.save(any(Budget.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
             Budget budget = budgetService.createBudget(request, currentClient.longValue());
@@ -98,12 +116,10 @@ class BudgetServiceTest {
         }
 
         @Test
-        @DisplayName(value = "It should return a Conflict Entity Exception when there is an active budget in the same period.")
+        @DisplayName(value = "Should return a Conflict Entity Exception when there is an active budget in the same period.")
         void shouldReturnConflictEntityExceptionWhenActiveBudgetInSamePeriod() {
 
             Integer currentClient = 1;
-            BudgetRequest request = createBudgetRequest();
-            Client client = createClient(currentClient);
             LocalDate expectedDate = request.periodReference().atDay(1);
 
             when(clientRepository.findById(currentClient)).thenReturn(Optional.of(client));
@@ -113,14 +129,49 @@ class BudgetServiceTest {
 
             assertTrue(exception.getMessage().contains(request.periodReference().toString()));
         }
+
+        @ParameterizedTest
+        @CsvSource({
+                "1500, 1200, 2700",
+                "-1000, 2000, 1000",
+                "500, 0, 500"
+        })
+        @DisplayName(value = "Should calculate total planned value correctly")
+        void shouldCalculateTotalPlanned(BigDecimal value1, BigDecimal value2, BigDecimal expected) {
+            var req0 = new BudgetCategoryRequest(1, value1);
+            var req1 = new BudgetCategoryRequest(2, value2);
+            BudgetRequest request = new BudgetRequest("Orcamento",
+                    YearMonth.now().plusMonths(1),
+                    PeriodType.MONTH, List.of(req0, req1));
+
+            Client client = new ClientTestBuilder().build();
+            List<Category> categoryList = BudgetTestData.createCategoryList();
+
+            when(clientRepository.findById(eq(1))).thenReturn(Optional.of(client));
+            when(categoryRepository.findById(eq(1))).thenReturn(Optional.of(categoryList.get(0)));
+            when(categoryRepository.findById(eq(2))).thenReturn(Optional.of(categoryList.get(1)));
+            when(budgetRepository.save(any(Budget.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+            Budget budget = budgetService.createBudget(request, 1L);
+
+            assertEquals(expected, budget.getTotalPlanned());
+        }
     }
 
+    @DisplayName(value = "Update a budget tests")
     @Nested
     class UpdateBudgetTests {
 
+        private BudgetRequest updatedBudgetRequest;
+
+        @BeforeEach
+        void setup() {
+            updatedBudgetRequest = BudgetTestData.createBudgetRequest();
+        }
+
+        @DisplayName(value = "Should update a budget with success")
         @Test
         void shouldUpdateBudgetWithSuccess() {
-            BudgetRequest updatedBudgetRequest = createBudgetRequest();
             Integer idBudget = 1;
 
             Budget budget = new BudgetTestBuilder()
@@ -156,10 +207,10 @@ class BudgetServiceTest {
             assertEquals(2, budgetUpdated.getCategories().size());
         }
 
+        @DisplayName(value = "Should return Not Found Exception when budget or category not found")
         @Test
         void shouldReturnBudgetNotFoundException() {
 
-            BudgetRequest updatedBudgetRequest = createBudgetRequest();
             Integer idBudget = 1;
 
             when(budgetRepository.findById(idBudget)).thenReturn(Optional.empty());
@@ -169,9 +220,9 @@ class BudgetServiceTest {
             assertTrue(exception.getMessage().contains(idBudget.toString()));
         }
 
+        @DisplayName(value = "Should return Not Found Exception when category not found")
         @Test
         void shouldReturnCategoryNotFoundException() {
-            BudgetRequest updatedBudgetRequest = createBudgetRequest();
             Integer idBudget = 1;
 
             Budget budget = new BudgetTestBuilder().build();
@@ -186,25 +237,6 @@ class BudgetServiceTest {
 
             assertTrue(exception.getMessage().contains(idBudget.toString()));
         }
-    }
-
-    private Client createClient(Integer id) {
-        return new Client(id, "robertovagner", LocalDate.now(), "Roberto Vagner",
-                "robertovagner@email.com", "12131", true);
-    }
-
-    private List<Category> createCategoryList() {
-        CategoryType type = new CategoryType(1, "DESPESA", "Saída");
-        Category category0 = new Category(1, "Compras", "Compras em Geral", type, null);
-        Category category1 = new Category(2, "Alimentação", "Gastos com alimentação", type, null);
-        return List.of(category0, category1);
-    }
-
-    private BudgetRequest createBudgetRequest() {
-        var req0 = new BudgetCategoryRequest(1, new BigDecimal("1500"));
-        var req1 = new BudgetCategoryRequest(2, new BigDecimal("1200"));
-        return new BudgetRequest("Orcamento Abril", YearMonth.of(2026, 4),
-                PeriodType.MONTH, List.of(req0, req1));
     }
 
 }

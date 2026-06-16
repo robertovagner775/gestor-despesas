@@ -31,6 +31,7 @@ public class Budget {
 
     private LocalDate periodReference;
 
+    @Enumerated(EnumType.STRING)
     private PeriodType periodType;
 
     @Enumerated(EnumType.STRING)

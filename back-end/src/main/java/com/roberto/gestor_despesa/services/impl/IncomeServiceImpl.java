@@ -72,7 +72,7 @@ public class IncomeServiceImpl implements IncomeService {
     }
 
     @Override
-    public Page<IncomeResponse> findAll(Integer idCurrentClient, BigDecimal valueStart, BigDecimal valueEnd, String description, LocalDate dateStart, LocalDate dateEnd, String category, Integer pageNumber, Integer pageSize) {
+    public Page<IncomeResponse> findAll(Integer idCurrentClient, BigDecimal valueStart, BigDecimal valueEnd, String description, LocalDate dateStart, LocalDate dateEnd, String category, Pageable pageable) {
         Specification<Income> specs = Specification.anyOf(IncomeSpecification.equalClient(idCurrentClient));
         if(category != null && !category.isBlank()) {
             specs = specs.and(IncomeSpecification.likeCategory(category));
@@ -86,7 +86,6 @@ public class IncomeServiceImpl implements IncomeService {
         if( (valueStart != null && valueEnd != null) && valueStart.compareTo(valueEnd) < 0) {
             specs = specs.and(IncomeSpecification.amountBetween(valueStart, valueEnd));
         }
-        Pageable pageRequest = PageRequest.of(pageNumber, pageSize);
-        return incomeRepository.findAll(specs, pageRequest).map(incomeMapper::toResponse);
+        return incomeRepository.findAll(specs, pageable).map(incomeMapper::toResponse);
     }
 }

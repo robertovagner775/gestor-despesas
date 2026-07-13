@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -58,8 +60,7 @@ public class IncomeController {
     @GetMapping
     public ResponseEntity<Page<IncomeResponse>> findAll(
             @AuthenticationPrincipal Jwt jwt,
-            @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
-            @RequestParam(required = false, defaultValue = "6") Integer pageSize,
+            Pageable pageable,
             @RequestParam(required = false) String description,
             @RequestParam(required = false) LocalDate dateStart,
             @RequestParam(required = false) LocalDate dateEnd,
@@ -68,9 +69,7 @@ public class IncomeController {
             @RequestParam(required = false) String category) {
         Long idCurrentClient = jwt.getClaim("clientId");
 
-        Page<IncomeResponse> response = service.findAll(idCurrentClient.intValue(),valueStart, valueEnd, description, dateStart, dateEnd, category, pageNumber, pageSize);
-
-        if (response.isEmpty()) return ResponseEntity.noContent().build();
+        Page<IncomeResponse> response = service.findAll(idCurrentClient.intValue(),valueStart, valueEnd, description, dateStart, dateEnd, category, pageable);
 
         return ResponseEntity.ok(response);
     }

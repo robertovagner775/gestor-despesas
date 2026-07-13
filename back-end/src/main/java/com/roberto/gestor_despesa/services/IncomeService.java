@@ -5,6 +5,7 @@ import com.roberto.gestor_despesa.dtos.response.IncomeResponse;
 import com.roberto.gestor_despesa.entities.Income;
 import com.roberto.gestor_despesa.security.UserAuth;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,5 +20,5 @@ public interface IncomeService {
 
     public IncomeResponse findById(Integer currentClient, Integer id);
 
-    public Page<IncomeResponse> findAll(Integer currentClient, BigDecimal valueStart, BigDecimal valueEnd, String description, LocalDate dateStart, LocalDate dateEnd, String category, Integer pageNumber, Integer pageSize);
+    public Page<IncomeResponse> findAll(Integer currentClient, BigDecimal valueStart, BigDecimal valueEnd, String description, LocalDate dateStart, LocalDate dateEnd, String category, Pageable pageable);
 }

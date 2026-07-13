@@ -229,7 +229,7 @@ class IncomeServiceTest {
 
             when(incomeRepository.findAll((Specification<Income>)  any(), any(Pageable.class))).thenReturn(incomesPage);
 
-            Page<IncomeResponse> result = incomeService.findAll(idCurrentClient, valueStart, valueEnd, description, dateStart, dateEnd, category, pageNumber, pageSize);
+            Page<IncomeResponse> result = incomeService.findAll(idCurrentClient, valueStart, valueEnd, description, dateStart, dateEnd, category, PageRequest.of(pageNumber, pageSize));
 
             verify(incomeRepository).findAll(specificationArgumentCaptor.capture(), pageableArgumentCaptor.capture());
             verify(incomeMapper, times(2)).toResponse(incomeArgumentCaptor.capture());

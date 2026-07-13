@@ -7,14 +7,15 @@ import com.roberto.gestor_despesa.dtos.response.IncomeResponse;
 import com.roberto.gestor_despesa.entities.Income;
 import com.roberto.gestor_despesa.handler.exceptions.NotFoundException;
 import com.roberto.gestor_despesa.services.IncomeService;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -235,6 +236,47 @@ public class IncomeControllerTest {
                     .andExpect(jsonPath("$.timeStamp").exists());
         }
 
+    }
+
+    @Nested
+    class findAll {
+
+        @Test
+        void shouldFindAllIncomesByClientWithPaginination() throws Exception {
+            Integer clientId = 1;
+            String description = "Test Income";
+            LocalDate dateStart = LocalDate.now().minusDays(7);
+            LocalDate dateEnd = LocalDate.now();
+            BigDecimal valueStart = new BigDecimal("100.00");
+            BigDecimal valueEnd = new BigDecimal("1000.00");
+            String category = "Test Category";
+            Pageable pageable = PageRequest.of(0, 10);;
+
+            given(incomeService.findAll(eq(clientId), eq(valueStart), eq(valueEnd), eq(description), eq(dateStart), eq(dateEnd), eq(category), eq(pageable)))
+                    .willReturn(Page.empty(pageable));
+
+            ResultActions response = mockMvc.perform((get("/api/incomes")
+                            .param("description", description)
+                            .param("dateStart", dateStart.toString())
+                            .param("dateEnd", dateEnd.toString())
+                            .param("valueStart", valueStart.toString())
+                            .param("valueEnd", valueEnd.toString())
+                            .param("category", category)
+                            .param("page", "0")
+                            .param("size", "10")
+                    )
+                    .with(csrf())
+                    .with(jwt().jwt(jwt -> jwt.claim("clientId", 1L))));
+
+            response.andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.content").isArray())
+                    .andExpect(jsonPath("$.totalElements").value(0))
+                    .andExpect(jsonPath("$.totalPages").value(0))
+                    .andExpect(jsonPath("$.pageable.pageSize").value(10));
+
+            verify(incomeService).findAll(eq(clientId), eq(valueStart), eq(valueEnd), eq(description), eq(dateStart), eq(dateEnd), eq(category), eq(pageable));
+        }
     }
 
     @Nested

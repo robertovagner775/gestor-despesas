@@ -10,20 +10,19 @@ import com.roberto.gestor_despesa.services.IncomeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
+import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -239,21 +238,25 @@ public class IncomeControllerTest {
     }
 
     @Nested
-    class findAll {
+    class findAllTests {
 
         @Test
-        void shouldFindAllIncomesByClientWithPaginination() throws Exception {
+        void shouldFindAllIncomesByClientWithPaginationSuccess() throws Exception {
+
             Integer clientId = 1;
             String description = "Test Income";
-            LocalDate dateStart = LocalDate.now().minusDays(7);
-            LocalDate dateEnd = LocalDate.now();
+            LocalDate dateStart = LocalDate.of(2026, 7, 1);
+            LocalDate dateEnd = LocalDate.of(2026, 7, 13);
             BigDecimal valueStart = new BigDecimal("100.00");
             BigDecimal valueEnd = new BigDecimal("1000.00");
             String category = "Test Category";
             Pageable pageable = PageRequest.of(0, 10);;
 
-            given(incomeService.findAll(eq(clientId), eq(valueStart), eq(valueEnd), eq(description), eq(dateStart), eq(dateEnd), eq(category), eq(pageable)))
-                    .willReturn(Page.empty(pageable));
+            IncomeResponse sample = new IncomeResponse(42, description, LocalDate.of(2026, 7, 5), new BigDecimal("500.00"), new CategoryResponse(7, category));
+            Pageable expectedPageable = PageRequest.of(0, 10);
+            Page<IncomeResponse> page = new PageImpl<>(List.of(sample), expectedPageable, 1);
+
+            given(incomeService.findAll(eq(clientId), eq(valueStart), eq(valueEnd), eq(description), eq(dateStart), eq(dateEnd), eq(category), eq(pageable))).willReturn(page);
 
             ResultActions response = mockMvc.perform((get("/api/incomes")
                             .param("description", description)
@@ -271,16 +274,22 @@ public class IncomeControllerTest {
             response.andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.content").isArray())
-                    .andExpect(jsonPath("$.totalElements").value(0))
-                    .andExpect(jsonPath("$.totalPages").value(0))
-                    .andExpect(jsonPath("$.pageable.pageSize").value(10));
+                    .andExpect(jsonPath("$.content.length()").value(1))
+                    .andExpect(jsonPath("$.content[0].id").value(sample.id()))
+                    .andExpect(jsonPath("$.content[0].description").value(sample.description()))
+                    .andExpect(jsonPath("$.content[0].amount").value(sample.amount().doubleValue()))
+                    .andExpect(jsonPath("$.content[0].category.id").value(sample.category().id()))
+                    .andExpect(jsonPath("$.totalElements").value(1))
+                    .andExpect(jsonPath("$.totalPages").value(1))
+                    .andExpect(jsonPath("$.pageable.pageSize").value(10))
+                    .andExpect(jsonPath("$.pageable.pageNumber").value(0));
 
             verify(incomeService).findAll(eq(clientId), eq(valueStart), eq(valueEnd), eq(description), eq(dateStart), eq(dateEnd), eq(category), eq(pageable));
         }
     }
 
     @Nested
-    class DeleteTests {
+    class deleteIncomeTests {
 
         @Test
         void shouldDeleteIncomeWithSuccess() throws Exception {

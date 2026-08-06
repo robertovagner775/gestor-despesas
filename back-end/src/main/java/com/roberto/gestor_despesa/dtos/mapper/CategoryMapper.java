@@ -1,5 +1,6 @@
 package com.roberto.gestor_despesa.dtos.mapper;
 
+import com.roberto.gestor_despesa.dtos.request.CategoryRequest;
 import com.roberto.gestor_despesa.dtos.response.CategoryResponse;
 import com.roberto.gestor_despesa.entities.Category;
 import org.mapstruct.Mapper;
@@ -12,5 +13,10 @@ import org.mapstruct.ReportingPolicy;
 public interface CategoryMapper {
 
     @Mapping(source = "title", target = "category")
-    CategoryResponse map(Category entity);
+    CategoryResponse toResponse(Category entity);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "categoryType", ignore = true)
+    @Mapping(target = "client", ignore = true)
+    Category toEntity(CategoryRequest request);
 }

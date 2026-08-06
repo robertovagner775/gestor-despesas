@@ -15,3 +15,5 @@ INSERT INTO CATEGORY (id, title, description, color, client_id, type_id) VALUES
 (8, 'Investimentos', 'Rendimentos provenientes de aplicações financeiras.', '#16A085', null, 2),
 (9, 'Outras Receitas', 'Outras entradas financeiras não classificadas.', '#3498DB', null, 2);
 
+SELECT setval(pg_get_serial_sequence('category', 'id'),(SELECT MAX(id) FROM category));
+SELECT setval(pg_get_serial_sequence('category_type', 'id'),(SELECT MAX(id) FROM category_type));

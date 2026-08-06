@@ -87,7 +87,7 @@ class IncomeServiceTest {
         void shouldCreateNewIncomeWithSuccess() {
 
             Integer clientId = 2;
-            Category existingCategory = new Category(8, "Investimentos", "Rendimentos a partir de investimentos", new CategoryType(2, "INCOME", "tipo de receita"), existingClient);
+            Category existingCategory = new Category(8, "Investimentos", "Rendimentos a partir de investimentos", "#FF5733", new CategoryType(2, "INCOME", "tipo de receita"), existingClient);;
 
             given(categoryRepository.findById(createRequest.category())).willReturn(Optional.of(existingCategory));
             given(clientRepository.findById(clientId)).willReturn(Optional.of(existingClient));
@@ -147,7 +147,7 @@ class IncomeServiceTest {
             Integer clientId = 2;
             Integer incomeId = 3;
             
-            Category existingCategory = new Category(7, "Vendas", "Vendas de Produtos", new CategoryType(2, "INCOME", "tipo de receita"), null);
+            Category existingCategory = new Category(7, "Vendas", "Vendas de Produtos", "#FF5744", new CategoryType(2, "INCOME", "tipo de receita"), null);;
             IncomeResponse expectedResponse = new IncomeResponse(3, "Salário", LocalDate.of(2026, 1, 16), new BigDecimal("3700.00"), new CategoryResponse(7, "Vendas"));
 
             when(categoryRepository.findById(updateRequest.category())).thenReturn(Optional.of(existingCategory));
@@ -217,8 +217,8 @@ class IncomeServiceTest {
             Client client = new Client(2, "Matias", LocalDate.of(2004, 1, 13), "Mat Wagner", "matias@email.com", "12345", true);
             CategoryType type = new CategoryType(2, "RECEITA", "entrada de dinheiro");
 
-            Category category0 = new Category(1, "VENDA", "Venda de materiais", type, client);
-            Category category1 = new Category(2, "INVESTIMENTO", "Investimentos em geral", type, client);
+            Category category0 = new Category(1, "VENDA", "Venda de materiais", "#FF573322", type, client);
+            Category category1 = new Category(2, "INVESTIMENTO", "Investimentos em geral", "#FF5711", type, client);;
 
             Income income0 = new Income(1, "Vendi meu celular", LocalDate.of(2026, 01, 01), new BigDecimal(1500.00), category0 , client);
             Income income1 = new Income(2, "Recebimento de Rendimentos de Investimento em Bolsa de Valores", LocalDate.of(2026, 01, 01), new BigDecimal(1000.00), category1, client);

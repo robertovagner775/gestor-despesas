@@ -19,6 +19,7 @@ public class Category {
     private Integer id;
     private String title;
     private String description;
+    private String color;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type_id", nullable = false)

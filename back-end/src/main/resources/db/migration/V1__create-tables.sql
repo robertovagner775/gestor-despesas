@@ -28,7 +28,7 @@ create table category(
 	id SERIAL primary key,
 	title VARCHAR(150) not null,
 	description VARCHAR(200) not null,
-	color VARCHAR(7),
+	color VARCHAR(11),
 	type_id INTEGER not null,
 	client_id INTEGER null,
 	constraint fk_category_type foreign key (type_id) references category_type(id),

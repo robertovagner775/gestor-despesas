@@ -21,8 +21,8 @@ public class BudgetTestData {
 
     public static List<Category> createCategoryList() {
         CategoryType type = new CategoryType(1, "DESPESA", "Saída");
-        Category category0 = new Category(1, "Compras", "Compras em Geral", type, null);
-        Category category1 = new Category(2, "Alimentação", "Gastos com alimentação", type, null);
+        Category category0 = new Category(1, "Compras", "Compras em Geral","#FFF", type, null);
+        Category category1 = new Category(2, "Alimentação", "Gastos com alimentação","#000000", type, null);
         return List.of(category0, category1);
     }
 
